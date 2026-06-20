@@ -64,85 +64,52 @@
             gap: 20px;
             width: 100%;
         }
-        .btn {
+        .btn-wrap {
             flex: 1;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 18px 20px;
-            border-radius: 4px;
-            background: transparent;
-            border: 2px dashed rgba(245,240,232,0.25);
+        }
+        .btn-wrap svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .btn {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 24px;
             color: rgba(245,240,232,0.9);
             font-size: 1.15rem;
             font-weight: 500;
             text-decoration: none;
-            transition: all 0.2s ease;
             cursor: pointer;
             user-select: none;
             letter-spacing: -0.3px;
             white-space: nowrap;
+            transition: opacity 0.2s;
+            background: transparent;
+            border: none;
         }
         .btn:hover {
-            border-style: solid;
-            border-color: rgba(245,240,232,0.6);
-            background: rgba(255,255,255,0.04);
-            color: #f5f0e8;
-        }
-        .btn:active {
-            transform: translateY(1px);
+            opacity: 0.8;
         }
         .btn.disabled {
-            opacity: 0.25;
+            opacity: 0.3;
             cursor: not-allowed;
+            pointer-events: none;
         }
         .btn.disabled:hover {
-            border-style: dashed;
-            border-color: rgba(245,240,232,0.25);
-            background: transparent;
-            color: rgba(245,240,232,0.9);
+            opacity: 0.3;
         }
-        .tray {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            width: 1080px;
-            max-width: 95vw;
-            padding: 0 12px;
-            margin-top: 8px;
-        }
-        .chalk-pieces {
-            display: flex;
-            gap: 6px;
-            align-items: flex-end;
-        }
-        .chalk {
-            border-radius: 3px 3px 1px 1px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        .chalk:nth-child(1) { width: 10px; height: 44px; background: #f5e6d3; }
-        .chalk:nth-child(2) { width: 9px; height: 36px; background: #e8c9a0; }
-        .chalk:nth-child(3) { width: 10px; height: 48px; background: #c2e0f0; }
-        .chalk:nth-child(4) { width: 9px; height: 28px; background: #f0c0c0; }
-        .eraser {
-            width: 56px;
-            height: 28px;
-            background: linear-gradient(180deg, #e8dcc8 0%, #d4c4a8 100%);
-            border-radius: 3px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            position: relative;
-        }
-        .eraser::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 2px;
-            right: 2px;
-            height: 10px;
-            background: #8b7355;
-            border-radius: 0 0 3px 3px;
-        }
+
         .footer {
             margin-top: 40px;
             color: rgba(0,0,0,0.15);
@@ -159,29 +126,70 @@
                 <p class="subtitle">Math Teacher was Bored</p>
 
                 <div class="buttons">
-                    <a class="btn" href="https://auto-tesk.vercel.app/" target="_blank" rel="noopener noreferrer">
-                        🔧 업무 자동화
-                    </a>
+                    <!-- 업무 자동화 - red chalk circle -->
+                    <div class="btn-wrap">
+                        <svg width="200" height="70" viewBox="0 0 200 70">
+                            <ellipse cx="100" cy="35" rx="96" ry="31"
+                                fill="none" stroke="#e07060" stroke-width="2.5"
+                                stroke-dasharray="7 3"
+                                stroke-linecap="round"
+                                opacity="0.8"
+                                transform="rotate(-1.5, 100, 35)" />
+                            <ellipse cx="100" cy="35" rx="93" ry="28"
+                                fill="none" stroke="#e07060" stroke-width="1"
+                                stroke-dasharray="4 5"
+                                stroke-linecap="round"
+                                opacity="0.4"
+                                transform="rotate(2, 100, 35)" />
+                        </svg>
+                        <a class="btn" href="https://auto-tesk.vercel.app/" target="_blank" rel="noopener noreferrer">
+                            🔧 업무 자동화
+                        </a>
+                    </div>
 
-                    <a class="btn" href="math.html">
-                        📊 수학
-                    </a>
+                    <!-- 수학 - yellow chalk circle -->
+                    <div class="btn-wrap">
+                        <svg width="200" height="70" viewBox="0 0 200 70">
+                            <ellipse cx="100" cy="35" rx="96" ry="31"
+                                fill="none" stroke="#e8c840" stroke-width="2.5"
+                                stroke-dasharray="8 4"
+                                stroke-linecap="round"
+                                opacity="0.8"
+                                transform="rotate(1, 100, 35)" />
+                            <ellipse cx="100" cy="35" rx="93" ry="28"
+                                fill="none" stroke="#e8c840" stroke-width="1"
+                                stroke-dasharray="3 6"
+                                stroke-linecap="round"
+                                opacity="0.4"
+                                transform="rotate(-2, 100, 35)" />
+                        </svg>
+                        <a class="btn" href="math.html">
+                            📊 수학
+                        </a>
+                    </div>
 
-                    <span class="btn disabled">
-                        👥 동료교사 사이트
-                    </span>
+                    <!-- 동료교사 사이트 - blue chalk circle -->
+                    <div class="btn-wrap">
+                        <svg width="200" height="70" viewBox="0 0 200 70">
+                            <ellipse cx="100" cy="35" rx="96" ry="31"
+                                fill="none" stroke="#6098d0" stroke-width="2.5"
+                                stroke-dasharray="6 4"
+                                stroke-linecap="round"
+                                opacity="0.8"
+                                transform="rotate(-0.5, 100, 35)" />
+                            <ellipse cx="100" cy="35" rx="93" ry="28"
+                                fill="none" stroke="#6098d0" stroke-width="1"
+                                stroke-dasharray="5 4"
+                                stroke-linecap="round"
+                                opacity="0.4"
+                                transform="rotate(1.5, 100, 35)" />
+                        </svg>
+                        <span class="btn disabled">
+                            👥 동료교사 사이트
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="tray">
-            <div class="chalk-pieces">
-                <div class="chalk"></div>
-                <div class="chalk"></div>
-                <div class="chalk"></div>
-                <div class="chalk"></div>
-            </div>
-            <div class="eraser"></div>
         </div>
     </div>
 
