@@ -10,74 +10,85 @@
             min-height: 100vh;
             background: #f8f6f0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
             padding: 40px 20px;
         }
-        .chalkboard {
-            background: linear-gradient(180deg, #2a4a3a 0%, #1e3828 100%);
-            border: 8px solid #5c3d2e;
-            border-radius: 8px;
-            box-shadow:
-                inset 0 0 60px rgba(0,0,0,0.3),
-                0 8px 32px rgba(0,0,0,0.5),
-                0 0 0 3px #3d2616;
-            padding: 64px 48px;
+        .chalkboard-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            max-width: 480px;
-            width: 100%;
+        }
+        .chalkboard {
+            background: linear-gradient(180deg, #2a4a3a 0%, #1e3828 100%);
+            border: 10px solid #5c3d2e;
+            border-radius: 6px;
+            box-shadow:
+                inset 0 0 80px rgba(0,0,0,0.3),
+                0 12px 40px rgba(0,0,0,0.4),
+                0 0 0 4px #3d2616;
+            padding: 56px 72px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 720px;
+            max-width: 95vw;
             position: relative;
         }
         .back {
             position: absolute;
-            top: 20px;
-            left: 24px;
+            top: 24px;
+            left: 28px;
             color: rgba(245,240,232,0.35);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-decoration: none;
             transition: color 0.2s;
         }
         .back:hover {
             color: rgba(245,240,232,0.7);
         }
-        h1 {
-            color: #f5f0e8;
-            font-size: 1.8rem;
-            text-align: center;
-            letter-spacing: -0.5px;
-            margin-top: 20px;
-            margin-bottom: 36px;
-            font-weight: 500;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-        }
-        .buttons {
+        .chalkboard-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 14px;
+            gap: 32px;
+            width: 100%;
+            margin-top: 12px;
+        }
+        h1 {
+            color: #f5f0e8;
+            font-size: 2rem;
+            text-align: center;
+            letter-spacing: -0.5px;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
             width: 100%;
         }
         .btn {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            width: 100%;
-            padding: 16px 24px;
+            padding: 18px 20px;
             border-radius: 4px;
             background: transparent;
             border: 2px dashed rgba(245,240,232,0.25);
             color: rgba(245,240,232,0.9);
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 500;
             text-decoration: none;
             transition: all 0.2s ease;
             cursor: pointer;
             user-select: none;
             letter-spacing: -0.3px;
+            white-space: nowrap;
         }
         .btn:hover {
             border-style: solid;
@@ -88,31 +99,85 @@
         .btn:active {
             transform: translateY(1px);
         }
+        .tray {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            width: 720px;
+            max-width: 95vw;
+            padding: 0 12px;
+            margin-top: 8px;
+        }
+        .chalk-pieces {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+        }
+        .chalk {
+            border-radius: 3px 3px 1px 1px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .chalk:nth-child(1) { width: 10px; height: 44px; background: #f5e6d3; }
+        .chalk:nth-child(2) { width: 9px; height: 36px; background: #e8c9a0; }
+        .chalk:nth-child(3) { width: 10px; height: 48px; background: #c2e0f0; }
+        .chalk:nth-child(4) { width: 9px; height: 28px; background: #f0c0c0; }
+        .eraser {
+            width: 56px;
+            height: 28px;
+            background: linear-gradient(180deg, #e8dcc8 0%, #d4c4a8 100%);
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .eraser::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2px;
+            right: 2px;
+            height: 10px;
+            background: #8b7355;
+            border-radius: 0 0 3px 3px;
+        }
         .footer {
-            margin-top: 48px;
-            color: rgba(245,240,232,0.15);
+            margin-top: 40px;
+            color: rgba(0,0,0,0.15);
             font-size: 0.7rem;
             text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="chalkboard">
-        <a class="back" href="index.html">← 수학 교사는 심심했다</a>
+    <div class="chalkboard-wrapper">
+        <div class="chalkboard">
+            <a class="back" href="index.html">← 수학 교사는 심심했다</a>
 
-        <h1>📊 수학</h1>
+            <div class="chalkboard-content">
+                <h1>📊 수학</h1>
 
-        <div class="buttons">
-            <a class="btn" href="#">
-                📈 지수함수와 로그함수
-            </a>
+                <div class="buttons">
+                    <a class="btn" href="#">
+                        📈 지수함수와 로그함수
+                    </a>
 
-            <a class="btn" href="#">
-                🔢 수열
-            </a>
+                    <a class="btn" href="#">
+                        🔢 수열
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <div class="footer">© 2026 수학 교사</div>
+        <div class="tray">
+            <div class="chalk-pieces">
+                <div class="chalk"></div>
+                <div class="chalk"></div>
+                <div class="chalk"></div>
+                <div class="chalk"></div>
+            </div>
+            <div class="eraser"></div>
+        </div>
     </div>
+
+    <div class="footer">© 2026 수학 교사</div>
 </body>
 </html>
