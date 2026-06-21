@@ -81,9 +81,10 @@
 
         /* Toggle button (수열) */
         .toggle-btn {
+            position: relative;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             width: 100%;
             padding: 20px 28px;
             border-radius: 10px;
@@ -105,12 +106,16 @@
             border-color: rgba(255,255,255,0.25);
         }
         .toggle-btn .arrow {
+            position: absolute;
+            right: 28px;
+            top: 50%;
+            transform: translateY(-50%);
             transition: transform 0.3s ease;
             font-size: 0.9rem;
             opacity: 0.5;
         }
         .toggle-btn .arrow.open {
-            transform: rotate(180deg);
+            transform: translateY(-50%) rotate(180deg);
         }
 
         /* Sub-items container */
