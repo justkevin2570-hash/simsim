@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>삼각함수 애니메이션</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.95rem;
+            margin-bottom: 56px;
+            text-align: center;
+        }
+
+        .cards {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.97);
+            border-radius: 20px;
+            padding: 32px 28px 28px;
+            width: 290px;
+            cursor: pointer;
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+        .card.disabled {
+            cursor: default;
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        canvas.preview {
+            border-radius: 10px;
+            background: #f4f6f9;
+            display: block;
+        }
+
+        .card-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.45;
+        }
+        .card-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .card-desc {
+            font-size: 0.78rem;
+            color: #888;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .badge {
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: #f0f0f0;
+            color: #aaa;
+            letter-spacing: 0.5px;
+        }
+
+        .sin .card-label  { color: #1e90ff; }
+        .sin .card-title  { color: #1e90ff; }
+        .cos .card-label  { color: #e67e22; }
+        .cos .card-title  { color: #e67e22; }
+        .tan .card-label  { color: #2ecc71; }
+        .tan .card-title  { color: #2ecc71; }
+
+        /* ── 네비게이션 ── */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 12px 24px;
+            display: flex;
+            gap: 18px;
+            background: rgba(15,12,41,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+        }
+        .top-nav a {
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            font-size: 0.88rem;
+            transition: 0.2s;
+        }
+        .top-nav a:hover {
+            color: #ffd200;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-nav">
+    <a href="../induction.html">🏠</a>
+    <a href="mathematical_induction/index.html">수학적 귀납법</a>
+</div>
+
+<h1>삼각함수 애니메이션</h1>
+<p class="subtitle">단위원의 전개를 통해 삼각함수를 시각적으로 이해해보세요</p>
+
+<div class="cards">
+
+    <a class="card sin" href="sinx.html">
+        <canvas class="preview" id="prevSin" width="234" height="124"></canvas>
+        <div class="card-label">Sine</div>
+        <div class="card-title">y = sin x</div>
+        <div class="card-desc">점의 y좌표 궤적으로<br>사인 곡선을 그립니다</div>
+    </a>
+
+    <a class="card cos" href="cosx.html">
+        <canvas class="preview" id="prevCos" width="234" height="124"></canvas>
+        <div class="card-label">Cosine</div>
+        <div class="card-title">y = cos x</div>
+        <div class="card-desc">점의 x좌표 궤적으로<br>코사인 곡선을 그립니다</div>
+    </a>
+
+    <a class="card tan" href="tanx.html">
+        <canvas class="preview" id="prevTan" width="234" height="124"></canvas>
+        <div class="card-label">Tangent</div>
+        <div class="card-title">y = tan x</div>
+        <div class="card-desc">접선의 교점 궤적으로<br>탄젠트 곡선을 그립니다</div>
+    </a>
+
+</div>
+
+<script>
+// ── 미리보기 애니메이션 (무한 스크롤) ───────────────────────
+function runPreview(canvasId, fn, curveColor, dotColor) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    const r   = 34;
+    const cx  = 46, cy = H / 2;
+    const gx0 = cx + r + 18;          // 그래프 왼쪽 경계
+    const gxR = W - 6;                 // 현재 점이 항상 머무는 오른쪽 위치
+    const graphW = gxR - gx0;
+    const scale = r * 0.5;             // 수평 스케일 (절반 → 주기 2배 짧게)
+    const maxAge = graphW / scale;     // 화면에 보여줄 최대 각도 범위
+
+    let angle = 0;
+    const pts = [];                    // { angle, y } 형태로 저장
+
+    (function frame() {
+        ctx.clearRect(0, 0, W, H);
+
+        // 배경 축선
+        ctx.strokeStyle = '#dde';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(cx - r - 6, cy); ctx.lineTo(cx + r + 6, cy);
+        ctx.moveTo(cx, cy - r - 6); ctx.lineTo(cx, cy + r + 6);
+        ctx.moveTo(gx0, cy); ctx.lineTo(W - 2, cy);
+        ctx.stroke();
+
+        // 단위원
+        ctx.strokeStyle = '#ccd';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const px = cx + r * Math.cos(-angle);
+        const py = cy + r * Math.sin(-angle);
+
+        // 반지름 선
+        ctx.strokeStyle = dotColor;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+
+        // 원 위 점
+        ctx.fillStyle = dotColor;
+        ctx.beginPath();
+        ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 현재 y값 (항상 오른쪽 끝에 그려짐)
+        const curY = fn === 'sin' ? cy + (py - cy) : cy - (px - cx);
+
+        // 연결 점선: 원 위 점 → 오른쪽 끝 현재 점
+        const linkY = fn === 'sin' ? py : cy;
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = dotColor + '99';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(px, linkY);
+        ctx.lineTo(gxR, curY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // 현재 점 저장
+        pts.push({ angle, y: curY });
+
+        // 오래된 점 제거 (화면 밖으로 벗어난 것)
+        while (pts.length > 0 && angle - pts[0].angle > maxAge + 0.05) {
+            pts.shift();
+        }
+
+        // 그래프 영역만 클리핑해서 곡선 그리기
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(gx0, 0, graphW + 6, H);
+        ctx.clip();
+
+        ctx.strokeStyle = curveColor;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        let started = false;
+        for (const pt of pts) {
+            // 오른쪽 끝을 기준으로 왼쪽으로 배치
+            const ptX = gxR - (angle - pt.angle) * scale;
+            if (ptX < gx0 - 2) continue;
+            if (!started) { ctx.moveTo(ptX, pt.y); started = true; }
+            else ctx.lineTo(ptX, pt.y);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        // 오른쪽 끝 현재 점
+        ctx.fillStyle = curveColor;
+        ctx.beginPath();
+        ctx.arc(gxR, curY, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        angle += 0.028;
+        requestAnimationFrame(frame);
+    })();
+}
+
+// ── 탄젠트 미리보기 (무한 스크롤) ───────────────────────
+function runTanPreview(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    const r      = 30;
+    const cx     = 42, cy = H / 2;
+    const tanLX  = cx + r;              // 탄젠트 라인 x
+    const gx0    = tanLX + 16;          // 그래프 왼쪽 경계
+    const gxR    = W - 6;               // 현재 점 고정 위치
+    const graphW = gxR - gx0;
+    const scale  = r * 0.5;
+    const maxAge = graphW / scale;
+    const clampH = r * 2.2;             // ±clamp 높이
+
+    const curveColor = '#2ecc71';
+    const dotColor   = '#2ecc71';
+
+    let angle = 0;
+    const pts = [];                     // { angle, y, isBreak }
+
+    (function frame() {
+        ctx.clearRect(0, 0, W, H);
+
+        // 배경 축선
+        ctx.strokeStyle = '#dde';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(cx - r - 5, cy); ctx.lineTo(cx + r + 5, cy);
+        ctx.moveTo(cx, cy - r - 5); ctx.lineTo(cx, cy + r + 5);
+        ctx.moveTo(gx0, cy); ctx.lineTo(W - 2, cy);
+        ctx.stroke();
+
+        // 탄젠트 라인 (수직)
+        ctx.strokeStyle = 'rgba(46,204,113,0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(tanLX, cy - clampH - 5);
+        ctx.lineTo(tanLX, cy + clampH + 5);
+        ctx.stroke();
+
+        // 단위원
+        ctx.strokeStyle = '#ccd';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const px = cx + r * Math.cos(-angle);
+        const py = cy + r * Math.sin(-angle);
+        const tanVal = Math.tan(angle);
+        const isNear = Math.abs(tanVal) > 2.5;
+
+        // 반지름 선
+        ctx.strokeStyle = dotColor;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(px, py);
+        ctx.stroke();
+
+        ctx.fillStyle = dotColor;
+        ctx.beginPath();
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (!isNear) {
+            const tpY = cy - r * tanVal;
+            const clampedTpY = Math.max(cy - clampH, Math.min(cy + clampH, tpY));
+
+            // 연장선: 원 위 점 → 탄젠트 라인
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = 'rgba(46,204,113,0.5)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.lineTo(tanLX, clampedTpY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 탄젠트 라인 교점
+            ctx.fillStyle = '#27ae60';
+            ctx.beginPath();
+            ctx.arc(tanLX, clampedTpY, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            const curY = cy - r * tanVal;
+            pts.push({ angle, y: curY, isBreak: false });
+        } else {
+            pts.push({ angle, y: 0, isBreak: true });
+        }
+
+        // 오래된 점 제거
+        while (pts.length > 0 && angle - pts[0].angle > maxAge + 0.1) {
+            pts.shift();
+        }
+
+        // 그래프 클리핑 후 곡선 그리기
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(gx0, cy - clampH - 5, graphW + 8, clampH * 2 + 10);
+        ctx.clip();
+
+        ctx.strokeStyle = curveColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        let started = false;
+        for (const pt of pts) {
+            if (pt.isBreak) { started = false; continue; }
+            const ptX = gxR - (angle - pt.angle) * scale;
+            const clampedY = Math.max(cy - clampH, Math.min(cy + clampH, pt.y));
+            if (ptX < gx0) continue;
+            if (!started) { ctx.moveTo(ptX, clampedY); started = true; }
+            else ctx.lineTo(ptX, clampedY);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        // 오른쪽 끝 현재 점
+        if (!isNear) {
+            const curY = Math.max(cy - clampH, Math.min(cy + clampH, cy - r * tanVal));
+            ctx.fillStyle = curveColor;
+            ctx.beginPath();
+            ctx.arc(gxR, curY, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        angle += 0.028;
+        requestAnimationFrame(frame);
+    })();
+}
+
+runPreview('prevSin', 'sin', '#1e90ff', '#ff4757');
+runPreview('prevCos', 'cos', '#e67e22', '#e67e22');
+runTanPreview('prevTan');
+</script>
+</body>
+</html>

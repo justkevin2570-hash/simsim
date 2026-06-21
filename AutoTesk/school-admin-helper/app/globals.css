@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ─────────────────────────────────────────────
+   공문서 스타일 (공공기관 표준 양식)
+   ───────────────────────────────────────────── */
+.document-preview {
+  font-family: "Batang", "Times New Roman", "Noto Serif KR", serif;
+  line-height: 1.8;
+  color: #1a1a1a;
+}
+
+.document-preview .doc-title {
+  font-family: "Malgun Gothic", "Apple Gothic", "Noto Sans KR", sans-serif;
+  font-size: 18pt;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 0 24pt 0;
+  letter-spacing: 0.02em;
+}
+
+.document-preview .doc-meta {
+  text-align: right;
+  font-size: 10pt;
+  margin-bottom: 20pt;
+  line-height: 1.6;
+  font-family: "Malgun Gothic", "Apple Gothic", "Noto Sans KR", sans-serif;
+}
+
+.document-preview .doc-section-title {
+  font-family: "Malgun Gothic", "Apple Gothic", "Noto Sans KR", sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  margin: 16pt 0 8pt 0;
+}
+
+.document-preview .doc-body {
+  font-size: 11pt;
+  margin: 0;
+  padding-left: 0;
+}
+
+.document-preview .doc-body p {
+  margin: 0 0 2pt 0;
+  text-indent: 0;
+}
+
+.document-preview .doc-body p.indent-1 {
+  padding-left: 20pt;
+}
+
+.document-preview .doc-body p.indent-2 {
+  padding-left: 40pt;
+}
+
+.document-preview .doc-body p.indent-3 {
+  padding-left: 60pt;
+}
+
+.document-preview .doc-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10pt;
+  margin: 10pt 0;
+  font-family: "Malgun Gothic", "Apple Gothic", "Noto Sans KR", sans-serif;
+}
+
+.document-preview .doc-body table th,
+.document-preview .doc-body table td {
+  border: 1px solid #333;
+  padding: 4pt 6pt;
+  text-align: center;
+}
+
+.document-preview .doc-body table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.document-preview .doc-attachments {
+  margin-top: 24pt;
+  border-top: 1px solid #333;
+  padding-top: 12pt;
+  font-size: 10pt;
+}
+
+.document-preview .doc-end {
+  text-align: right;
+  margin-top: 20pt;
+  font-size: 10pt;
+}
+
+/* ─────────────────────────────────────────────
+   인쇄 스타일 (Ctrl+P → PDF)
+   ───────────────────────────────────────────── */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+  }
+
+  /* 화면 전용 요소 숨김 */
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* 인쇄용 콘텐츠 확장 */
+  .print-content {
+    max-width: 100%;
+  }
+
+  .print-content section {
+    page-break-inside: avoid;
+  }
+
+  .print-content h3 {
+    page-break-after: avoid;
+  }
+
+  /* 문서 미리보기 인쇄 최적화 */
+  .document-preview {
+    font-size: 11pt !important;
+    line-height: 1.7 !important;
+  }
+
+  .document-preview .doc-title {
+    font-size: 16pt !important;
+  }
+
+  .document-preview .doc-section-title {
+    font-size: 11pt !important;
+  }
+
+  .document-preview .doc-body {
+    font-size: 10pt !important;
+  }
+
+  @page {
+    margin: 20mm 25mm 20mm 25mm;
+    size: A4;
+  }
+}

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>수학적 귀납법 — 다양한 증명 예제</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #eee;
+            font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+            line-height: 1.7;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 30px;
+        }
+        header h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        header .sub {
+            margin-top: 8px;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.95rem;
+        }
+        header .back-link {
+            display: inline-block;
+            margin-top: 14px;
+            color: rgba(255,255,255,0.35);
+            text-decoration: none;
+            font-size: 0.88rem;
+        }
+        header .back-link:hover { color: #ffd200; }
+
+        section {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .example-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px;
+            padding: 32px;
+            margin-bottom: 36px;
+            transition: 0.2s;
+        }
+        .example-card:hover {
+            border-color: rgba(255,215,0,0.15);
+        }
+
+        .example-card h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #ffd200;
+        }
+        .example-card .problem {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 16px;
+        }
+        .example-card .theorem {
+            background: rgba(0,0,0,0.25);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 12px 0 18px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.2);
+            color: #ffd200;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: 0.2s;
+            margin-top: 8px;
+        }
+        .toggle-btn:hover {
+            background: rgba(255,215,0,0.18);
+        }
+
+        .proof-content {
+            margin-top: 18px;
+            display: none;
+        }
+        .proof-content.open {
+            display: block;
+        }
+
+        .proof-step {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid rgba(255,215,0,0.3);
+            border-radius: 0 8px 8px 0;
+        }
+        .proof-step .label {
+            font-weight: 600;
+            color: #ffd200;
+            font-size: 0.82rem;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .proof-step .math {
+            display: block;
+            font-size: 1rem;
+            padding: 6px 0;
+        }
+        .proof-step .desc {
+            display: block;
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .math-block {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin: 8px 0;
+            text-align: center;
+            overflow-x: auto;
+        }
+
+        .highlight-box {
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid #ffd200;
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin: 14px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 12px;
+            background: rgba(255,215,0,0.15);
+            color: #ffd200;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.6rem; }
+            section { padding: 24px 14px; }
+            .example-card { padding: 20px; }
+        }
+
+        /* ── 네비게이션 ── */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 10px 22px;
+            display: flex;
+            gap: 16px;
+            background: rgba(15,12,41,0.88);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+        }
+        .top-nav a {
+            color: rgba(255,255,255,0.45);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+        .top-nav a:hover {
+            color: #ffd200;
+        }
+        body { padding-top: 40px; }
+
+        /* 시각화 컨테이너 */
+        .viz-box {
+            margin: 16px 0;
+            text-align: center;
+        }
+        .viz-box canvas {
+            border-radius: 12px;
+            background: rgba(0,0,0,0.2);
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-nav">
+    <a href="../../induction.html">🏠</a>
+    <a href="../index.html">삼각함수</a>
+    <a href="index.html">귀납법 개념</a>
+</div>
+
+<header>
+    <h1>다양한 증명 예제</h1>
+    <p class="sub">수학적 귀납법으로 여러 명제를 증명해봅시다</p>
+    <a class="back-link" href="index.html">← 수학적 귀납법 개념으로 돌아가기</a>
+</header>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 예제 1: 제곱의 합 -->
+<!-- ════════════════════════════════════════════ -->
+<section>
+    <div class="example-card">
+        <h2>예제 1. 제곱의 합 <span class="badge">기본</span></h2>
+        <p class="problem">
+            모든 자연수 \(n\)에 대해 다음이 성립함을 증명하시오.
+        </p>
+        <div class="theorem">
+            $$
+            1^2 + 2^2 + 3^2 + \cdots + n^2 = \frac{n(n+1)(2n+1)}{6}
+            $$
+        </div>
+
+        <button class="toggle-btn" onclick="toggleProof('proof1')">
+            📖 증명 보기 / 숨기기
+        </button>
+
+        <div class="proof-content" id="proof1">
+            <div class="proof-step">
+                <span class="label">📌 Step 1 — 기초 단계 (Base Case: \(n=1\))</span>
+                <span class="math">\( 좌변 = 1^2 = 1\)</span>
+                <span class="math">\( 우변 = \dfrac{1 \cdot 2 \cdot 3}{6} = \dfrac{6}{6} = 1\)</span>
+                <span class="desc">좌변 = 우변이므로 \(P(1)\)은 참. ✅</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 2 — 귀납 가정 (Inductive Hypothesis)</span>
+                <span class="math">\(n=k\)일 때 성립한다고 가정:</span>
+                <span class="math">\(1^2 + 2^2 + \cdots + k^2 = \dfrac{k(k+1)(2k+1)}{6}\)</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 3 — 귀납 단계 (\(k \rightarrow k+1\))</span>
+                <span class="desc">양변에 \((k+1)^2\)을 더합니다:</span>
+                <span class="math">\(1^2 + 2^2 + \cdots + k^2 + (k+1)^2 = \dfrac{k(k+1)(2k+1)}{6} + (k+1)^2\)</span>
+                <span class="desc"></span>
+                <span class="math">\(= \dfrac{k(k+1)(2k+1) + 6(k+1)^2}{6}\)</span>
+                <span class="math">\(= \dfrac{(k+1)[k(2k+1) + 6(k+1)]}{6}\)</span>
+                <span class="math">\(= \dfrac{(k+1)(2k^2 + k + 6k + 6)}{6}\)</span>
+                <span class="math">\(= \dfrac{(k+1)(2k^2 + 7k + 6)}{6}\)</span>
+                <span class="math">\(= \dfrac{(k+1)(k+2)(2k+3)}{6}\)</span>
+                <span class="desc">이는 \(n=k+1\)일 때의 공식 \(\dfrac{(k+1)((k+1)+1)(2(k+1)+1)}{6}\)과 일치! ✅</span>
+            </div>
+
+            <div class="highlight-box">
+                <strong>✅ 결론:</strong> 기초 단계와 귀납 단계가 모두 증명되었으므로,<br>
+                모든 자연수 \(n\)에 대해 \(\displaystyle\sum_{r=1}^{n} r^2 = \frac{n(n+1)(2n+1)}{6}\) 이 성립한다.
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- 예제 2: 세제곱의 합 -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="example-card">
+        <h2>예제 2. 세제곱의 합 <span class="badge">기본</span></h2>
+        <p class="problem">
+            모든 자연수 \(n\)에 대해 다음이 성립함을 증명하시오.
+        </p>
+        <div class="theorem">
+            $$
+            1^3 + 2^3 + 3^3 + \cdots + n^3 = \left[\frac{n(n+1)}{2}\right]^2
+            $$
+        </div>
+        <p style="font-size:0.88rem;color:rgba(255,255,255,0.4);margin-bottom:8px;">
+            💡 자연수의 합의 제곱과 같다는 흥미로운 결과입니다!
+        </p>
+
+        <button class="toggle-btn" onclick="toggleProof('proof2')">
+            📖 증명 보기 / 숨기기
+        </button>
+
+        <div class="proof-content" id="proof2">
+            <div class="proof-step">
+                <span class="label">📌 Step 1 — 기초 단계 (\(n=1\))</span>
+                <span class="math">\( 좌변 = 1^3 = 1\)</span>
+                <span class="math">\( 우변 = \left[\dfrac{1 \cdot 2}{2}\right]^2 = 1^2 = 1\)</span>
+                <span class="desc">성립! ✅</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 2 — 귀납 가정</span>
+                <span class="math">\(1^3 + 2^3 + \cdots + k^3 = \left[\dfrac{k(k+1)}{2}\right]^2\)</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 3 — 귀납 단계</span>
+                <span class="math">\(\begin{align}1^3 + 2^3 + \cdots + k^3 + (k+1)^3 &= \left[\dfrac{k(k+1)}{2}\right]^2 + (k+1)^3 \\ 
+                &= \dfrac{k^2(k+1)^2}{4} + (k+1)^3 \\ 
+                &= \dfrac{(k+1)^2[k^2 + 4(k+1)]}{4} \\ 
+                &= \dfrac{(k+1)^2(k^2 + 4k + 4)}{4} \\ 
+                &= \dfrac{(k+1)^2(k+2)^2}{4} \\ 
+                &= \left[\dfrac{(k+1)(k+2)}{2}\right]^2 \end{align}\)</span>
+                <span class="desc">\(n=k+1\)일 때도 성립! ✅</span>
+            </div>
+
+            <div class="highlight-box">
+                <strong>✅ 결론:</strong> 모든 자연수 \(n\)에 대해 \(\displaystyle\sum_{r=1}^{n} r^3 = \left[\frac{n(n+1)}{2}\right]^2\) 이 성립한다.
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- 예제 3: 점화식으로 정의된 수열 -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="example-card">
+        <h2>예제 3. 점화식 수열의 일반항 <span class="badge">중급</span></h2>
+        <p class="problem">
+            수열 \(\{a_n\}\)이 \(a_1 = 2\), \(a_{n+1} = \dfrac{a_n}{1 + a_n}\) (\(n \ge 1\))으로 정의될 때,<br>
+            일반항 \(a_n = \dfrac{2}{2n-1}\)임을 수학적 귀납법으로 증명하시오.
+        </p>
+
+        <button class="toggle-btn" onclick="toggleProof('proof3')">
+            📖 증명 보기 / 숨기기
+        </button>
+
+        <div class="proof-content" id="proof3">
+            <div class="proof-step">
+                <span class="label">📌 Step 1 — 기초 단계 (\(n=1\))</span>
+                <span class="math">\(a_1 = 2\)</span>
+                <span class="math">\(\dfrac{2}{2\cdot1-1} = \dfrac{2}{1} = 2\)</span>
+                <span class="desc">일치! ✅</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 2 — 귀납 가정</span>
+                <span class="math">\(a_k = \dfrac{2}{2k-1}\) 이라고 가정</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 3 — 귀납 단계 (\(k \rightarrow k+1\))</span>
+                <span class="desc">점화식 \(a_{k+1} = \dfrac{a_k}{1 + a_k}\) 에 가정을 대입:</span>
+                <span class="math">\(\begin{align} a_{k+1} &= \dfrac{\frac{2}{2k-1}}{1 + \frac{2}{2k-1}} \\ 
+                &= \dfrac{\frac{2}{2k-1}}{\frac{2k-1 + 2}{2k-1}} \\ 
+                &= \dfrac{2}{2k-1} \cdot \dfrac{2k-1}{2k+1} \\ 
+                &= \dfrac{2}{2k+1} \\ 
+                &= \dfrac{2}{2(k+1)-1} \end{align}\)</span>
+                <span class="desc">즉 \(a_{k+1} = \dfrac{2}{2(k+1)-1}\) 이므로 \(n=k+1\)일 때도 성립! ✅</span>
+            </div>
+
+            <div class="highlight-box">
+                <strong>✅ 결론:</strong> 모든 자연수 \(n\)에 대해 \(a_n = \dfrac{2}{2n-1}\) 이 성립한다.
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- 예제 4: 등차수열의 합 (시각화 포함) -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="example-card">
+        <h2>예제 4. 등차수열의 합 <span class="badge">시각화</span></h2>
+        <p class="problem">
+            모든 자연수 \(n\)에 대해 다음이 성립함을 증명하시오.
+        </p>
+        <div class="theorem">
+            $$
+            1 + 3 + 5 + \cdots + (2n-1) = n^2
+            $$
+        </div>
+        <p style="font-size:0.88rem;color:rgba(255,255,255,0.4);margin-bottom:8px;">
+            💡 홀수의 합은 언제나 완전제곱수입니다!
+        </p>
+
+        <!-- 시각화: 정사각형으로 홀수의 합 보여주기 -->
+        <div class="viz-box">
+            <canvas id="oddSquareViz" width="400" height="200"></canvas>
+            <p style="font-size:0.8rem;color:rgba(255,255,255,0.3);margin-top:4px;">
+                홀수들(색상 블록)이 정사각형을 채워나가는 모습
+            </p>
+        </div>
+
+        <button class="toggle-btn" onclick="toggleProof('proof4')">
+            📖 증명 보기 / 숨기기
+        </button>
+
+        <div class="proof-content" id="proof4">
+            <div class="proof-step">
+                <span class="label">📌 Step 1 — 기초 단계 (\(n=1\))</span>
+                <span class="math">\( 좌변 = 1\)</span>
+                <span class="math">\( 우변 = 1^2 = 1\)</span>
+                <span class="desc">성립! ✅ (1은 정사각형 1×1)</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 2 — 귀납 가정</span>
+                <span class="math">\(1 + 3 + 5 + \cdots + (2k-1) = k^2\)</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 3 — 귀납 단계</span>
+                <span class="desc">양변에 다음 홀수 \((2(k+1)-1) = (2k+1)\)을 더합니다:</span>
+                <span class="math">\(\begin{align}1 + 3 + \cdots + (2k-1) + (2k+1) &= k^2 + (2k+1) \\ 
+                &= (k+1)^2 \end{align}\)</span>
+                <span class="desc">\(k^2\)에 \((2k+1)\)을 더하면 \((k+1)^2\)! 정사각형이 한 겹 더 커집니다. ✅</span>
+            </div>
+
+            <div class="highlight-box">
+                <strong>✅ 결론:</strong> 모든 자연수 \(n\)에 대해 \(\displaystyle\sum_{r=1}^{n} (2r-1) = n^2\) 이 성립한다.<br>
+                <span style="font-size:0.85rem;color:rgba(255,255,255,0.5);">
+                    💡 이는 기하학적으로 \(n \times n\) 정사각형을 ㄱ자 모양(\(2n-1\)개)으로 
+                    한 겹씩 쌓아가는 것과 같습니다.
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- 예제 5: 나눗셈 (Divisibility) -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="example-card">
+        <h2>예제 5. 나눗셈 증명 <span class="badge">중급</span></h2>
+        <p class="problem">
+            모든 자연수 \(n\)에 대해 \(2^{3n} - 1\)이 \(7\)의 배수임을 증명하시오.
+        </p>
+
+        <button class="toggle-btn" onclick="toggleProof('proof5')">
+            📖 증명 보기 / 숨기기
+        </button>
+
+        <div class="proof-content" id="proof5">
+            <div class="proof-step">
+                <span class="label">📌 Step 1 — 기초 단계 (\(n=1\))</span>
+                <span class="math">\(2^{3\cdot1} - 1 = 2^3 - 1 = 8 - 1 = 7\)</span>
+                <span class="desc">7은 7의 배수이므로 성립! ✅</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 2 — 귀납 가정</span>
+                <span class="math">\(2^{3k} - 1 = 7m\) (단, \(m\)은 정수)</span>
+                <span class="desc">즉, \(2^{3k} = 7m + 1\)</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 3 — 귀납 단계</span>
+                <span class="math">\(\begin{align}2^{3(k+1)} - 1 &= 2^{3k+3} - 1 \\ 
+                &= 2^3 \cdot 2^{3k} - 1 \\ 
+                &= 8 \cdot (7m + 1) - 1 \\ 
+                &= 56m + 8 - 1 \\ 
+                &= 56m + 7 \\ 
+                &= 7(8m + 1) \end{align}\)</span>
+                <span class="desc">\(7(8m+1)\)은 7의 배수이므로 \(n=k+1\)일 때도 성립! ✅</span>
+            </div>
+
+            <div class="highlight-box">
+                <strong>✅ 결론:</strong> 모든 자연수 \(n\)에 대해 \(2^{3n} - 1\)은 7의 배수이다.
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- 예제 6: 수열의 항이 특정 조건 만족 -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="example-card">
+        <h2>예제 6. 부등식 증명 <span class="badge">고급</span></h2>
+        <p class="problem">
+            모든 자연수 \(n \ge 2\)에 대해 다음 부등식이 성립함을 증명하시오.
+        </p>
+        <div class="theorem">
+            $$
+            \frac{1}{\sqrt{1}} + \frac{1}{\sqrt{2}} + \frac{1}{\sqrt{3}} + \cdots + \frac{1}{\sqrt{n}} > 2(\sqrt{n+1} - 1)
+            $$
+        </div>
+
+        <button class="toggle-btn" onclick="toggleProof('proof6')">
+            📖 증명 보기 / 숨기기
+        </button>
+
+        <div class="proof-content" id="proof6">
+            <div class="proof-step">
+                <span class="label">📌 Step 1 — 기초 단계 (\(n=2\))</span>
+                <span class="math">\( 좌변 = \dfrac{1}{\sqrt{1}} + \dfrac{1}{\sqrt{2}} \approx 1 + 0.707 = 1.707\)</span>
+                <span class="math">\( 우변 = 2(\sqrt{3} - 1) \approx 2(1.732 - 1) = 1.464\)</span>
+                <span class="desc">\(1.707 > 1.464\) 이므로 성립! ✅</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 2 — 귀납 가정</span>
+                <span class="math">\(\displaystyle\sum_{r=1}^{k} \frac{1}{\sqrt{r}} > 2(\sqrt{k+1} - 1)\)</span>
+            </div>
+
+            <div class="proof-step">
+                <span class="label">📌 Step 3 — 귀납 단계 (\(k \ge 2\))</span>
+                <span class="desc">양변에 \(\dfrac{1}{\sqrt{k+1}}\) 을 더합니다:</span>
+                <span class="math">\(\displaystyle\sum_{r=1}^{k+1} \frac{1}{\sqrt{r}} > 2(\sqrt{k+1} - 1) + \frac{1}{\sqrt{k+1}}\)</span>
+                <span class="desc">우변이 \(2(\sqrt{k+2} - 1)\)보다 큼을 보이면 된다:</span>
+                <span class="math">\(2(\sqrt{k+1} - 1) + \dfrac{1}{\sqrt{k+1}} - 2(\sqrt{k+2} - 1)\)</span>
+                <span class="math">\(= 2\sqrt{k+1} - 2 + \dfrac{1}{\sqrt{k+1}} - 2\sqrt{k+2} + 2\)</span>
+                <span class="math">\(= 2(\sqrt{k+1} - \sqrt{k+2}) + \dfrac{1}{\sqrt{k+1}}\)</span>
+                <span class="math">\(= \dfrac{-2}{\sqrt{k+1} + \sqrt{k+2}} + \dfrac{1}{\sqrt{k+1}}\)</span>
+                <span class="math">\(> \dfrac{-2}{2\sqrt{k+1}} + \dfrac{1}{\sqrt{k+1}} = -\dfrac{1}{\sqrt{k+1}} + \dfrac{1}{\sqrt{k+1}} = 0\)</span>
+                <span class="desc">따라서 \(n=k+1\)일 때도 부등식 성립! ✅</span>
+            </div>
+
+            <div class="highlight-box">
+                <strong>✅ 결론:</strong> 모든 \(n \ge 2\)에 대해 주어진 부등식이 성립한다.
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer style="text-align:center;padding:30px 20px;color:rgba(255,255,255,0.2);font-size:0.85rem;">
+    <p><a href="index.html" style="color:rgba(255,255,255,0.3);text-decoration:none;">← 수학적 귀납법 개념으로</a></p>
+</footer>
+
+<!-- ══════════════ -->
+<script>
+// 증명 토글
+function toggleProof(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+    // 토글 후 수식 재렌더링
+    if (el.classList.contains('open') && window.renderMathInElement) {
+        renderMathInElement(el, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '\\(', right:'\\)', display: false}
+            ]
+        });
+    }
+}
+
+// ── 홀수의 합 시각화 ──
+(function() {
+    const canvas = document.getElementById('oddSquareViz');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    const maxN = 5;   // 5×5 정사각형
+    const cellSize = Math.min(W, H) / (maxN + 3);
+    const offsetX = (W - cellSize * maxN) / 2;
+    const offsetY = (H - cellSize * maxN) / 2;
+
+    const colors = [
+        '#ffd200',
+        '#f7971e',
+        '#e74c3c',
+        '#2ecc71',
+        '#3498db',
+    ];
+
+    let animN = 1;
+    let frameId = null;
+
+    function drawSquare(n) {
+        ctx.clearRect(0, 0, W, H);
+
+        // 제목
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(n + '×' + n + ' = ' + (n*n) + '  (1+3+...+' + (2*n-1) + ')', W/2, 24);
+
+        // 그리드
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                const ring = Math.max(i, j);  // 0-indexed ring
+                const x = offsetX + j * cellSize;
+                const y = offsetY + i * cellSize;
+
+                ctx.fillStyle = colors[ring % colors.length];
+                ctx.globalAlpha = 0.85;
+                ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
+                ctx.globalAlpha = 1;
+
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x, y, cellSize - 1, cellSize - 1);
+            }
+        }
+
+        // 라벨: "n=1" "n=2" ... "n=5"
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        for (let i = 1; i <= maxN; i++) {
+            const labelX = offsetX + (i - 0.5) * cellSize;
+            const labelY = offsetY + maxN * cellSize + 24;
+            if (i === n) {
+                ctx.fillStyle = '#ffd200';
+                ctx.font = 'bold 13px sans-serif';
+            } else {
+                ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                ctx.font = '12px sans-serif';
+            }
+            ctx.fillText('n=' + i, labelX, labelY);
+            ctx.fillStyle = 'rgba(255,255,255,0.25)';
+            ctx.font = '12px sans-serif';
+        }
+    }
+
+    function animateSquare() {
+        drawSquare(animN);
+        animN = (animN % maxN) + 1;
+        frameId = setTimeout(animateSquare, 1400);
+    }
+
+    // 시작
+    animateSquare();
+
+    // clean up on page hide (optional)
+    window.addEventListener('beforeunload', function() {
+        if (frameId) clearTimeout(frameId);
+    });
+})();
+
+// 초기 수식 렌더링
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '\\(', right:'\\)', display: false}
+            ]
+        });
+    }
+});
+</script>
+</body>
+</html>
