@@ -876,7 +876,7 @@
 
   const examples = [
     {
-      // 예제 1: 1+2+...+n = n(n+1)/2
+      // 예제 1: 1+2+...+n = n(n+1)/2  (세분화 + 도미노 연결)
       problem: '$$1+2+\\cdots+n = \\frac{n(n+1)}{2}$$',
       steps: [
         {
@@ -894,24 +894,46 @@
           ]
         },
         {
-          label: '양변에 (k+1)을 더하면',
+          label: 'Step 1. 양변에 (k+1)을 더한다',
           body: [
             '$1+2+\\cdots+k+(k+1) = \\dfrac{k(k+1)}{2} + (k+1)$'
           ]
         },
         {
-          label: '우변 정리',
+          label: 'Step 2. 우변을 통분한다 (공통분모 2)',
           body: [
-            '$\\dfrac{k(k+1)}{2} + (k+1) = \\dfrac{k(k+1) + 2(k+1)}{2}$',
-            '$= \\dfrac{(k+1)(k+2)}{2}$'
+            '$\\dfrac{k(k+1)}{2} + (k+1) = \\dfrac{k(k+1)}{2} + \\dfrac{2(k+1)}{2}$',
+            '$= \\dfrac{k(k+1) + 2(k+1)}{2}$'
           ]
         },
         {
-          label: '결론',
+          label: '⭐ Step 3. 공통인수 (k+1)로 묶는다',
           body: [
-            '$1+2+\\cdots+(k+1) = \\dfrac{(k+1)\\{(k+1)+1\\}}{2}$',
-            '따라서 n = k+1일 때도 성립한다.',
-            '$\\therefore$ 모든 자연수 $n$에 대하여 성립한다. $\\blacksquare$'
+            '$\\dfrac{k(k+1) + 2(k+1)}{2} = \\dfrac{(k+1)(k+2)}{2}$',
+            '※ 이 부분이 학생들이 가장 많이 막히는 곳입니다. 천천히 짚어주세요.'
+          ]
+        },
+        {
+          label: 'Step 4. n = k+1일 때의 형태 확인',
+          body: [
+            '$1+2+\\cdots+(k+1) = \\dfrac{(k+1)(k+2)}{2}$',
+            '$= \\dfrac{(k+1)\\{(k+1)+1\\}}{2}$  ← 처음 식에 n 대신 (k+1)을 대입한 형태와 일치',
+            '따라서 n = k+1일 때도 성립한다. $\\checkmark$'
+          ]
+        },
+        {
+          label: '🎯 결론 — 도미노 비유와 연결',
+          body: [
+            'i) n = 1일 때 성립한다.',
+            'ii) n = k일 때 성립하면 n = k+1일 때도 성립한다.',
+            '',
+            '— 도미노 비유 연결 —',
+            'i) n=1 성립    → 첫 번째 도미노가 쓰러졌다',
+            'ii) k→k+1 성립 → k번째→(k+1)번째도 쓰러진다',
+            '∴ 모든 n 성립   → 모든 도미노가 쓰러진다',
+            '',
+            '$\\therefore$ 수학적 귀납법에 의하여 모든 자연수 $n$에 대하여',
+            '$1+2+\\cdots+n = \\dfrac{n(n+1)}{2}$ 가 성립한다. $\\blacksquare$'
           ],
           conclusion: true
         }
@@ -1023,60 +1045,74 @@
     nextProofBtn.style.opacity = '1';
     nextProofBtn.style.cursor = 'pointer';
 
-    // Rebuild and show first step
-    buildProofCards();
-    renderAllKaTeX();
-  }
-
-  function buildProofCards() {
+    // Clear and rebuild one card at a time
     proofSteps.innerHTML = '';
-    const data = examples[currentExample].steps;
-    data.forEach((step, idx) => {
-      const card = document.createElement('div');
-      card.className = 'proof-card' + (step.conclusion ? ' conclusion' : '');
-      card.dataset.index = idx;
-
-      const body = document.createElement('div');
-      body.className = 'card-body';
-
-      const label = document.createElement('div');
-      label.className = 'step-label';
-      label.textContent = step.label;
-      body.appendChild(label);
-
-      step.body.forEach(line => {
-        const p = document.createElement('p');
-        p.textContent = line;
-        body.appendChild(p);
-      });
-
-      card.appendChild(body);
-      proofSteps.appendChild(card);
-    });
+    renderAllKaTeX();
+    addNextCard();
   }
 
-  function showNextProofStep() {
-    const cards = proofSteps.querySelectorAll('.proof-card');
-    if (currentProofStep < cards.length) {
-      cards[currentProofStep].classList.add('visible');
-      setTimeout(() => {
-        if (typeof renderMathInElement === 'function') {
-          renderMathInElement(cards[currentProofStep], {
-            delimiters: [
-              {left: '$$', right: '$$', display: true},
-              {left: '$', right: '$', display: false}
-            ]
-          });
-        }
-      }, 50);
-      currentProofStep++;
-    }
-    if (currentProofStep >= cards.length) {
+  function addNextCard() {
+    const data = examples[currentExample].steps;
+    if (currentProofStep >= data.length) return;
+
+    const step = data[currentProofStep];
+    const card = document.createElement('div');
+    card.className = 'proof-card' + (step.conclusion ? ' conclusion' : '');
+
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    const label = document.createElement('div');
+    label.className = 'step-label';
+    label.textContent = step.label;
+    body.appendChild(label);
+
+    step.body.forEach(line => {
+      const p = document.createElement('p');
+      // 교사용 팁은 빨간색 강조
+      if (line.startsWith('※')) {
+        p.style.color = '#e07060';
+        p.style.fontSize = '0.85rem';
+        p.style.marginTop = '8px';
+        p.style.fontWeight = '500';
+      }
+      p.textContent = line;
+      body.appendChild(p);
+    });
+
+    card.appendChild(body);
+    proofSteps.appendChild(card);
+
+    // Fade in
+    requestAnimationFrame(() => {
+      card.classList.add('visible');
+    });
+
+    currentProofStep++;
+
+    // KaTeX render for this card
+    setTimeout(() => {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(card, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ]
+        });
+      }
+    }, 50);
+
+    // Update button state
+    if (currentProofStep >= data.length) {
       nextProofBtn.disabled = true;
       nextProofBtn.textContent = '✓ 모든 단계 완료';
       nextProofBtn.style.opacity = '0.5';
       nextProofBtn.style.cursor = 'not-allowed';
     }
+  }
+
+  function showNextProofStep() {
+    addNextCard();
   }
 
   // Tab click handlers
@@ -1087,8 +1123,8 @@
     });
   });
 
-  buildProofCards();
-  showNextProofStep();
+  // Initialize: show first card
+  addNextCard();
   nextProofBtn.addEventListener('click', showNextProofStep);
 
   /* ====================================================== */
