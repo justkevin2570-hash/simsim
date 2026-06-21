@@ -669,17 +669,23 @@
   }
 
   /* ===== Physics helpers ===== */
-  const FALL_ANGLE = 68;  // ° — 최종 쓰러진 각도
+  const CONTACT_ANGLE = 21;  // ° — 서로 맞닿는 각도
+  const FALL_ANGLE = 68;     // ° — 최종 쓰러진 각도 (연쇄반응용)
 
   /**
-   * Section 1: 새 조건이 추가되면 다음 도미노 하나를 완전히 쓰러뜨린다.
+   * Section 1: 이미 넘어진 도미노들의 각도를 연쇄적으로 계산한다.
+   * 마지막으로 넘어진 도미노는 다음 도미노와 맞닿고, 앞선 도미노일수록 더 많이 기운다.
    */
-  function toppleNextDomino(index) {
-    const allDominos = dominoRow.querySelectorAll('.domino');
-    if (index < allDominos.length) {
-      allDominos[index].style.transform = `rotate(${FALL_ANGLE}deg)`;
-      allDominos[index].classList.add('fallen');
+  function getPartialChainAngles(fallenCount) {
+    if (fallenCount <= 0) return [];
+    if (fallenCount === 1) return [CONTACT_ANGLE];
+    const angles = [];
+    const firstMax = Math.min(48, CONTACT_ANGLE + (fallenCount - 1) * 6);
+    for (let i = 0; i < fallenCount; i++) {
+      const t = i / (fallenCount - 1);
+      angles[i] = firstMax - t * (firstMax - CONTACT_ANGLE);
     }
+    return angles;
   }
 
   /* ====================================================== */
@@ -725,8 +731,14 @@
     li.textContent = `${numToCircle(nth)} ${nth - 1} → ${nth}`;
     conditionList.appendChild(li);
 
-    // 다음 도미노를 완전히 쓰러뜨린다
-    toppleNextDomino(s1ClickCount - 1);
+    // Recalculate ALL fallen domino angles (chain interaction)
+    const fallenCount = s1ClickCount;
+    const angles = getPartialChainAngles(fallenCount);
+    const allDominos = dominoRow.querySelectorAll('.domino');
+    for (let i = 0; i < fallenCount && i < allDominos.length; i++) {
+      allDominos[i].style.transform = `rotate(${angles[i]}deg)`;
+      allDominos[i].classList.add('fallen');
+    }
 
     // Show warning after max clicks
     if (s1ClickCount >= MAX_CLICKS) {
