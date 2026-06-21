@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수학 교사는 심심했다</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background: #f8f6f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+            padding: 40px 20px;
+        }
+        .chalkboard-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .chalkboard {
+            background: linear-gradient(180deg, #2a4a3a 0%, #1e3828 100%);
+            border: 10px solid #5c3d2e;
+            border-radius: 6px;
+            box-shadow:
+                inset 0 0 80px rgba(0,0,0,0.3),
+                0 12px 40px rgba(0,0,0,0.4),
+                0 0 0 4px #3d2616;
+            padding: 84px 108px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 1080px;
+            max-width: 95vw;
+        }
+        .chalkboard-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+            width: 100%;
+        }
+        h1 {
+            color: #f5f0e8;
+            font-size: 3.2rem;
+            text-align: center;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .subtitle {
+            color: rgba(245,240,232,0.5);
+            font-size: 0.95rem;
+            text-align: center;
+            font-style: italic;
+            margin-top: -20px;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+        }
+        .btn-wrap {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-wrap svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .btn {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 24px;
+            color: rgba(245,240,232,0.9);
+            font-size: 1.15rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            user-select: none;
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+            background: transparent;
+            border: none;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .btn.disabled:hover {
+            opacity: 0.3;
+        }
+
+        .footer {
+            margin-top: 40px;
+            color: rgba(0,0,0,0.15);
+            font-size: 0.7rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="chalkboard-wrapper">
+        <div class="chalkboard">
+            <div class="chalkboard-content">
+                <h1>📐 수학 교사는 심심했다.</h1>
+                <p class="subtitle">Math Teacher was Bored</p>
+
+                <div class="buttons">
+                    <!-- 업무 자동화 - red chalk circle -->
+                    <div class="btn-wrap">
+                        <svg width="200" height="70" viewBox="0 0 200 70">
+                            <ellipse cx="100" cy="35" rx="96" ry="31"
+                                fill="none" stroke="#e07060" stroke-width="2.5"
+                                stroke-dasharray="7 3"
+                                stroke-linecap="round"
+                                opacity="0.8"
+                                transform="rotate(-1.5, 100, 35)" />
+                            <ellipse cx="100" cy="35" rx="93" ry="28"
+                                fill="none" stroke="#e07060" stroke-width="1"
+                                stroke-dasharray="4 5"
+                                stroke-linecap="round"
+                                opacity="0.4"
+                                transform="rotate(2, 100, 35)" />
+                        </svg>
+                        <a class="btn" href="https://auto-tesk.vercel.app/" target="_blank" rel="noopener noreferrer">
+                            🔧 업무 자동화
+                        </a>
+                    </div>
+
+                    <!-- 수학 - yellow chalk circle -->
+                    <div class="btn-wrap">
+                        <svg width="200" height="70" viewBox="0 0 200 70">
+                            <ellipse cx="100" cy="35" rx="96" ry="31"
+                                fill="none" stroke="#e8c840" stroke-width="2.5"
+                                stroke-dasharray="8 4"
+                                stroke-linecap="round"
+                                opacity="0.8"
+                                transform="rotate(1, 100, 35)" />
+                            <ellipse cx="100" cy="35" rx="93" ry="28"
+                                fill="none" stroke="#e8c840" stroke-width="1"
+                                stroke-dasharray="3 6"
+                                stroke-linecap="round"
+                                opacity="0.4"
+                                transform="rotate(-2, 100, 35)" />
+                        </svg>
+                        <a class="btn" href="math.html">
+                            📊 수학
+                        </a>
+                    </div>
+
+                    <!-- 동료교사 사이트 - blue chalk circle -->
+                    <div class="btn-wrap">
+                        <svg width="200" height="70" viewBox="0 0 200 70">
+                            <ellipse cx="100" cy="35" rx="96" ry="31"
+                                fill="none" stroke="#6098d0" stroke-width="2.5"
+                                stroke-dasharray="6 4"
+                                stroke-linecap="round"
+                                opacity="0.8"
+                                transform="rotate(-0.5, 100, 35)" />
+                            <ellipse cx="100" cy="35" rx="93" ry="28"
+                                fill="none" stroke="#6098d0" stroke-width="1"
+                                stroke-dasharray="5 4"
+                                stroke-linecap="round"
+                                opacity="0.4"
+                                transform="rotate(1.5, 100, 35)" />
+                        </svg>
+                        <span class="btn disabled">
+                            👥 동료교사 사이트
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">since 2026</div>
+</body>
+</html>
