@@ -344,16 +344,6 @@
       opacity: 1;
       transform: translateY(0);
     }
-    .proof-card .domino-icon {
-      flex-shrink: 0;
-      width: 20px;
-      height: 60px;
-      background: #374151;
-      border-radius: 3px;
-      transform: rotate(75deg);
-      transform-origin: bottom right;
-      margin-top: 6px;
-    }
     .proof-card .card-body {
       flex: 1;
     }
@@ -440,6 +430,34 @@
       transition: opacity 0.3s;
     }
     .match-badge.visible { opacity: 1; }
+
+    /* ===== Example tabs ===== */
+    .example-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .example-tab {
+      padding: 10px 22px;
+      border-radius: 8px;
+      border: 2px solid rgba(255,255,255,0.1);
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .example-tab:hover {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.8);
+    }
+    .example-tab.active {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: #fff;
+    }
 
     /* ===== Responsive ===== */
     @media (max-width: 768px) {
@@ -591,16 +609,22 @@
 <section id="s3" class="section">
   <h2 class="section-title">구체적 증명</h2>
 
+  <div class="example-tabs">
+    <button class="example-tab active" data-example="0">예제 1</button>
+    <button class="example-tab" data-example="1">예제 2</button>
+    <button class="example-tab" data-example="2">예제 3</button>
+  </div>
+
   <div class="problem-box">
     <h3>📝 문제</h3>
     <p>다음을 증명하라.</p>
-    <div style="margin-top:8px;">
+    <div id="problem-formula" style="margin-top:8px;">
       $$1+2+\cdots+n = \frac{n(n+1)}{2}$$
     </div>
   </div>
 
   <div class="proof-steps" id="proof-steps">
-    <!-- 5 cards built by JS -->
+    <!-- built by JS -->
   </div>
 
   <div class="next-section" id="proof-next-wrap">
@@ -846,67 +870,181 @@
 
   const proofSteps = document.getElementById('proof-steps');
   const nextProofBtn = document.getElementById('next-proof-btn');
+  const problemFormula = document.getElementById('problem-formula');
   let currentProofStep = 0;
+  let currentExample = 0;
 
-  const proofData = [
+  const examples = [
     {
-      label: 'i) n = 1일 때 (Base case)',
-      body: [
-        '좌변 = $1$',
-        '우변 = $\\dfrac{1 \\times 2}{2} = 1$',
-        '좌변 = 우변 = 1 이므로 성립 $\\checkmark$'
+      // 예제 1: 1+2+...+n = n(n+1)/2
+      problem: '$$1+2+\\cdots+n = \\frac{n(n+1)}{2}$$',
+      steps: [
+        {
+          label: 'i) n = 1일 때 (Base case)',
+          body: [
+            '좌변 = $1$',
+            '우변 = $\\dfrac{1 \\times 2}{2} = 1$',
+            '좌변 = 우변 = 1 이므로 성립 $\\checkmark$'
+          ]
+        },
+        {
+          label: 'ii) n = k일 때 성립한다고 가정',
+          body: [
+            '$1+2+\\cdots+k = \\dfrac{k(k+1)}{2}$'
+          ]
+        },
+        {
+          label: '양변에 (k+1)을 더하면',
+          body: [
+            '$1+2+\\cdots+k+(k+1) = \\dfrac{k(k+1)}{2} + (k+1)$'
+          ]
+        },
+        {
+          label: '우변 정리',
+          body: [
+            '$\\dfrac{k(k+1)}{2} + (k+1) = \\dfrac{k(k+1) + 2(k+1)}{2}$',
+            '$= \\dfrac{(k+1)(k+2)}{2}$'
+          ]
+        },
+        {
+          label: '결론',
+          body: [
+            '$1+2+\\cdots+(k+1) = \\dfrac{(k+1)\\{(k+1)+1\\}}{2}$',
+            '따라서 n = k+1일 때도 성립한다.',
+            '$\\therefore$ 모든 자연수 $n$에 대하여 성립한다. $\\blacksquare$'
+          ],
+          conclusion: true
+        }
       ]
     },
     {
-      label: 'ii) n = k일 때 성립한다고 가정',
-      body: [
-        '$1+2+\\cdots+k = \\dfrac{k(k+1)}{2}$'
+      // 예제 2: 1²+2²+...+n² = n(n+1)(2n+1)/6
+      problem: '$$1^2+2^2+\\cdots+n^2 = \\frac{n(n+1)(2n+1)}{6}$$',
+      steps: [
+        {
+          label: 'i) n = 1일 때 (Base case)',
+          body: [
+            '좌변 = $1^2 = 1$',
+            '우변 = $\\dfrac{1 \\times 2 \\times 3}{6} = 1$',
+            '좌변 = 우변 = 1 이므로 성립 $\\checkmark$'
+          ]
+        },
+        {
+          label: 'ii) n = k일 때 성립한다고 가정',
+          body: [
+            '$1^2+2^2+\\cdots+k^2 = \\dfrac{k(k+1)(2k+1)}{6}$'
+          ]
+        },
+        {
+          label: '양변에 (k+1)²을 더하면',
+          body: [
+            '$1^2+2^2+\\cdots+k^2+(k+1)^2 = \\dfrac{k(k+1)(2k+1)}{6} + (k+1)^2$'
+          ]
+        },
+        {
+          label: '우변 정리',
+          body: [
+            '$= \\dfrac{k(k+1)(2k+1) + 6(k+1)^2}{6}$',
+            '$= \\dfrac{(k+1)[k(2k+1) + 6(k+1)]}{6}$',
+            '$= \\dfrac{(k+1)(2k^2+7k+6)}{6}$',
+            '$= \\dfrac{(k+1)(k+2)(2k+3)}{6}$'
+          ]
+        },
+        {
+          label: '결론',
+          body: [
+            '$1^2+2^2+\\cdots+(k+1)^2 = \\dfrac{(k+1)\\{(k+1)+1\\}\\{2(k+1)+1\\}}{6}$',
+            '따라서 n = k+1일 때도 성립한다.',
+            '$\\therefore$ 모든 자연수 $n$에 대하여 성립한다. $\\blacksquare$'
+          ],
+          conclusion: true
+        }
       ]
     },
     {
-      label: '양변에 (k+1)을 더하면',
-      body: [
-        '$1+2+\\cdots+k+(k+1) = \\dfrac{k(k+1)}{2} + (k+1)$'
+      // 예제 3: 2^n > n (n ≥ 1)
+      problem: '$$2^n > n \\quad (n \\ge 1)$$',
+      steps: [
+        {
+          label: 'i) n = 1일 때 (Base case)',
+          body: [
+            '좌변 = $2^1 = 2$',
+            '우변 = $1$',
+            '$2 > 1$ 이므로 성립 $\\checkmark$'
+          ]
+        },
+        {
+          label: 'ii) n = k일 때 성립한다고 가정',
+          body: [
+            '$2^k > k$  (단, $k \\ge 1$)'
+          ]
+        },
+        {
+          label: '양변에 2를 곱하면',
+          body: [
+            '$2^{k+1} = 2 \\cdot 2^k > 2k$',
+            '(귀납 가정 $2^k > k$ 에 의해)'
+          ]
+        },
+        {
+          label: 'k ≥ 1이므로 2k ≥ k+1',
+          body: [
+            '$2^{k+1} > 2k \\ge k+1$',
+            '따라서 $2^{k+1} > k+1$'
+          ]
+        },
+        {
+          label: '결론',
+          body: [
+            '$2^{k+1} > k+1$ 이므로 n = k+1일 때도 성립한다.',
+            '$\\therefore$ 모든 자연수 $n$에 대하여 $2^n > n$ 이다. $\\blacksquare$'
+          ],
+          conclusion: true
+        }
       ]
-    },
-    {
-      label: '우변 정리',
-      body: [
-        '$\\dfrac{k(k+1)}{2} + (k+1) = \\dfrac{k(k+1) + 2(k+1)}{2}$',
-        '$= \\dfrac{(k+1)(k+2)}{2}$'
-      ]
-    },
-    {
-      label: '결론',
-      body: [
-        '$1+2+\\cdots+(k+1) = \\dfrac{(k+1)\\{(k+1)+1\\}}{2}$',
-        '따라서 n = k+1일 때도 성립한다.',
-        '$\\therefore$ 모든 자연수 $n$에 대하여 성립한다. $\\blacksquare$'
-      ],
-      conclusion: true
     }
   ];
 
+  function switchExample(idx) {
+    currentExample = idx;
+    currentProofStep = 0;
+
+    // Update tab active state
+    document.querySelectorAll('.example-tab').forEach((tab, i) => {
+      tab.classList.toggle('active', i === idx);
+    });
+
+    // Update problem formula
+    problemFormula.innerHTML = examples[idx].problem;
+
+    // Reset proof button
+    nextProofBtn.disabled = false;
+    nextProofBtn.textContent = '다음 단계 →';
+    nextProofBtn.style.opacity = '1';
+    nextProofBtn.style.cursor = 'pointer';
+
+    // Rebuild and show first step
+    buildProofCards();
+    renderAllKaTeX();
+  }
+
   function buildProofCards() {
     proofSteps.innerHTML = '';
-    proofData.forEach((data, idx) => {
+    const data = examples[currentExample].steps;
+    data.forEach((step, idx) => {
       const card = document.createElement('div');
-      card.className = 'proof-card' + (data.conclusion ? ' conclusion' : '');
+      card.className = 'proof-card' + (step.conclusion ? ' conclusion' : '');
       card.dataset.index = idx;
-
-      const icon = document.createElement('div');
-      icon.className = 'domino-icon';
-      card.appendChild(icon);
 
       const body = document.createElement('div');
       body.className = 'card-body';
 
       const label = document.createElement('div');
       label.className = 'step-label';
-      label.textContent = data.label;
+      label.textContent = step.label;
       body.appendChild(label);
 
-      data.body.forEach(line => {
+      step.body.forEach(line => {
         const p = document.createElement('p');
         p.textContent = line;
         body.appendChild(p);
@@ -915,7 +1053,6 @@
       card.appendChild(body);
       proofSteps.appendChild(card);
     });
-    renderAllKaTeX();
   }
 
   function showNextProofStep() {
@@ -941,6 +1078,14 @@
       nextProofBtn.style.cursor = 'not-allowed';
     }
   }
+
+  // Tab click handlers
+  document.querySelectorAll('.example-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const idx = parseInt(tab.dataset.example);
+      switchExample(idx);
+    });
+  });
 
   buildProofCards();
   showNextProofStep();
