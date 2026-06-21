@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>수학적 귀납법 — 도미노로 이해하는 무한의 증명</title>
+  <!-- KaTeX CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Pretendard', 'Noto Sans KR', -apple-system, sans-serif;
+      color: #111827;
+      background: #ffffff;
+      font-size: 18px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ===== Section ===== */
+    .section {
+      padding: 80px 24px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+    .section-subtitle {
+      font-size: 20px;
+      color: #6b7280;
+      margin-bottom: 40px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 8px;
+      border: none;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+      text-decoration: none;
+      font-family: inherit;
+      background: #2563eb;
+      color: #fff;
+    }
+    .btn:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-outline {
+      background: transparent;
+      color: #2563eb;
+      border: 2px solid #2563eb;
+    }
+    .btn-outline:hover { background: #eff6ff; }
+    .btn-green {
+      background: #10b981;
+    }
+    .btn-green:hover { background: #059669; }
+    .btn-gray {
+      background: #6b7280;
+    }
+    .btn-gray:hover { background: #4b5563; }
+    .next-section {
+      display: flex;
+      justify-content: center;
+      margin-top: 48px;
+    }
+
+    /* ===== Section 0 — Title ===== */
+    #s0 {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 80px 24px;
+    }
+    #s0 h1 {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    #s0 .sub {
+      font-size: 24px;
+      color: #6b7280;
+      margin-bottom: 48px;
+    }
+    .domino-decoration {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      margin-bottom: 40px;
+    }
+    .domino-decoration .mini-domino {
+      width: 18px;
+      height: 60px;
+      background: #2563eb;
+      border-radius: 3px;
+    }
+    .domino-decoration .mini-domino:nth-child(1) { height: 50px; }
+    .domino-decoration .mini-domino:nth-child(2) { height: 60px; }
+    .domino-decoration .mini-domino:nth-child(3) { height: 68px; }
+    .domino-decoration .mini-domino:nth-child(4) { height: 56px; }
+    .domino-decoration .mini-domino:nth-child(5) { height: 72px; }
+
+    /* ===== Section 1 — Domino & Conditions ===== */
+    #s1 .layout {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+    }
+    #s1 .left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    #s1 .right {
+      flex: 1;
+    }
+
+    .domino-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 24px 0;
+      min-height: 160px;
+    }
+    .domino-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .domino-wrapper .index-label {
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+    .domino {
+      width: 30px;
+      height: 100px;
+      background: #374151;
+      border-radius: 4px;
+      transform-origin: bottom right;
+      transition: transform 0.35s ease-in;
+      position: relative;
+    }
+    .domino::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      right: 4px;
+      bottom: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.05);
+    }
+    .domino-row .ellipsis {
+      font-size: 28px;
+      color: #6b7280;
+      padding: 0 8px;
+      align-self: flex-end;
+      margin-bottom: 30px;
+    }
+
+    .condition-box {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 24px;
+      min-height: 200px;
+    }
+    .condition-box h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .condition-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .condition-list li {
+      padding: 12px 16px;
+      background: #f9fafb;
+      border-radius: 6px;
+      border-left: 4px solid #2563eb;
+      font-size: 16px;
+      animation: fadeSlideIn 0.35s ease-out;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .warning-box {
+      background: #ef4444;
+      color: #fff;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-weight: 600;
+      margin-top: 16px;
+      animation: fadeSlideIn 0.4s ease-out;
+    }
+
+    /* ===== Section 2 — Induction Principle ===== */
+    #s2 .layout {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    #s2 .left-preview {
+      flex: 1;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+    #s2 .left-preview .condition-list li {
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+    #s2 .arrow-col {
+      font-size: 64px;
+      color: #2563eb;
+      font-weight: 300;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    #s2 .right-box {
+      flex: 1;
+    }
+    .induction-box {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 28px;
+    }
+    .induction-box h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .induction-item {
+      padding: 16px 20px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      border-left: 4px solid #2563eb;
+      background: #f9fafb;
+    }
+    .induction-item:last-child { margin-bottom: 0; }
+    .induction-item .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .badge-blue { background: #2563eb; }
+    .badge-green { background: #10b981; }
+
+    /* Chain reaction */
+    .chain-area {
+      text-align: center;
+    }
+    .chain-area h3 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .domino-chain {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      min-height: 140px;
+    }
+    .domino-chain .domino {
+      width: 26px;
+      height: 90px;
+      background: #374151;
+      border-radius: 4px;
+      transform-origin: bottom right;
+      transition: transform 0.3s ease-in;
+    }
+    .chain-result {
+      font-size: 24px;
+      font-weight: 700;
+      color: #10b981;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      margin-top: 12px;
+    }
+    .chain-result.visible { opacity: 1; }
+
+    /* ===== Section 3 — Proof ===== */
+    .problem-box {
+      background: #eff6ff;
+      border-radius: 8px;
+      padding: 28px 32px;
+      margin-bottom: 40px;
+    }
+    .problem-box h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .proof-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .proof-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 24px 28px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .proof-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .proof-card .domino-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 60px;
+      background: #374151;
+      border-radius: 3px;
+      transform: rotate(75deg);
+      transform-origin: bottom right;
+      margin-top: 6px;
+    }
+    .proof-card .card-body {
+      flex: 1;
+    }
+    .proof-card .card-body .step-label {
+      font-weight: 700;
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+    .proof-card .card-body p {
+      margin-bottom: 6px;
+    }
+    .proof-card.conclusion {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+
+    /* ===== Section 4 — Interactive Checker ===== */
+    #s4 .slider-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    #s4 .slider-area label {
+      font-weight: 600;
+    }
+    #s4 .slider-area input[type="range"] {
+      flex: 1;
+      min-width: 160px;
+      accent-color: #2563eb;
+      height: 6px;
+    }
+    #s4 .slider-area .n-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #2563eb;
+      min-width: 40px;
+    }
+    .check-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .check-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+    }
+    .check-card h4 {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+    .check-card .value {
+      font-size: 24px;
+      font-weight: 700;
+      word-break: break-all;
+    }
+    .check-card .term-preview {
+      font-size: 14px;
+      color: #6b7280;
+      margin-top: 8px;
+      word-break: break-all;
+    }
+    .check-eq {
+      font-size: 36px;
+      color: #2563eb;
+      font-weight: 300;
+      text-align: center;
+    }
+    .match-badge {
+      display: inline-block;
+      padding: 8px 24px;
+      border-radius: 999px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      background: #10b981;
+      margin-top: 24px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .match-badge.visible { opacity: 1; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      body { font-size: 16px; }
+      .section { padding: 48px 16px; }
+      .section-title { font-size: 28px; }
+      #s0 h1 { font-size: 36px; }
+      #s0 .sub { font-size: 18px; }
+
+      #s1 .layout { flex-direction: column; gap: 24px; }
+      .domino-row { gap: 4px; }
+      .domino { width: 24px; height: 80px; }
+      .domino-wrapper .index-label { font-size: 11px; }
+
+      #s2 .layout { flex-direction: column; gap: 16px; }
+      #s2 .arrow-col { font-size: 40px; }
+      .domino-chain .domino { width: 20px; height: 70px; }
+
+      .check-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .check-eq { font-size: 28px; }
+
+      .proof-card { flex-direction: column; }
+    }
+
+    /* ===== Reduced Motion ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================== -->
+<!-- Section 0 — Title                                                  -->
+<!-- ================================================================== -->
+<section id="s0" class="section">
+  <div class="domino-decoration">
+    <div class="mini-domino"></div>
+    <div class="mini-domino"></div>
+    <div class="mini-domino"></div>
+    <div class="mini-domino"></div>
+    <div class="mini-domino"></div>
+  </div>
+  <h1>수학적 귀납법</h1>
+  <p class="sub">도미노로 이해하는 무한의 증명</p>
+  <button class="btn" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})" aria-label="수업 시작하기">
+    수업 시작 →
+  </button>
+</section>
+
+<!-- ================================================================== -->
+<!-- Section 1 — Domino Metaphor: Problem                               -->
+<!-- ================================================================== -->
+<section id="s1" class="section">
+  <h2 class="section-title">도미노의 비유</h2>
+  <p class="section-subtitle">모든 도미노가 쓰러지려면 어떤 조건이 필요할까?</p>
+
+  <div class="layout">
+    <div class="left">
+      <div class="domino-row" id="domino-row-s1">
+        <!-- 8 dominos built by JS -->
+      </div>
+    </div>
+    <div class="right">
+      <div class="condition-box" id="condition-box">
+        <h3>모든 도미노가 쓰러지려면?</h3>
+        <ul class="condition-list" id="condition-list">
+          <li>① 첫 번째 도미노가 쓰러져야 한다</li>
+        </ul>
+        <div id="condition-footer">
+          <button class="btn btn-outline" id="add-condition-btn" aria-label="다음 조건 추가" style="margin-top:16px;">
+            + 다음 조건 추가
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="next-section">
+    <button class="btn btn-outline" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})" aria-label="다음 섹션으로">
+      해결책 보기 →
+    </button>
+  </div>
+</section>
+
+<!-- ================================================================== -->
+<!-- Section 2 — Induction Principle: Solution                          -->
+<!-- ================================================================== -->
+<section id="s2" class="section">
+  <h2 class="section-title">단 두 가지 조건이면 충분하다</h2>
+  <p class="section-subtitle">무한히 나열할 필요 없이, 핵심만 알면 된다</p>
+
+  <div class="layout">
+    <div class="left-preview">
+      <div class="condition-box">
+        <h3>끝없는 조건 리스트</h3>
+        <ul class="condition-list" id="preview-list">
+          <li>① 첫 번째가 쓰러진다</li>
+          <li>② 1 → 2</li>
+          <li>③ 2 → 3</li>
+          <li style="opacity:0.4;">⋮</li>
+        </ul>
+      </div>
+    </div>
+    <div class="arrow-col">⇒</div>
+    <div class="right-box">
+      <div class="induction-box">
+        <h3>단 두 가지만 보이면 충분!</h3>
+        <div class="induction-item">
+          <span class="badge badge-blue">Base case</span>
+          <strong>첫 번째 도미노가 쓰러진다</strong>
+        </div>
+        <div class="induction-item" style="border-left-color:#10b981;">
+          <span class="badge badge-green">Inductive step</span>
+          <strong>k번째 도미노가 쓰러지면 (k+1)번째 도미노가 쓰러진다</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chain-area">
+    <h3>▶ 연쇄 반응 시뮬레이션</h3>
+    <div class="domino-chain" id="domino-chain"></div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-green" id="chain-play-btn" aria-label="연쇄 반응 재생">▶ 연쇄 반응 재생</button>
+      <button class="btn btn-gray" id="chain-reset-btn" aria-label="다시 재생">⟲ 다시 재생</button>
+    </div>
+    <div class="chain-result" id="chain-result">→ 모든 도미노가 쓰러진다!</div>
+  </div>
+
+  <div class="next-section">
+    <button class="btn btn-outline" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})" aria-label="구체적 증명 보기">
+      구체적 증명 보기 →
+    </button>
+  </div>
+</section>
+
+<!-- ================================================================== -->
+<!-- Section 3 — Concrete Proof                                         -->
+<!-- ================================================================== -->
+<section id="s3" class="section">
+  <h2 class="section-title">구체적 증명</h2>
+
+  <div class="problem-box">
+    <h3>📝 문제</h3>
+    <p>다음을 증명하라.</p>
+    <div style="margin-top:8px;">
+      $$1+2+\cdots+n = \frac{n(n+1)}{2}$$
+    </div>
+  </div>
+
+  <div class="proof-steps" id="proof-steps">
+    <!-- 5 cards built by JS -->
+  </div>
+
+  <div class="next-section" id="proof-next-wrap">
+    <button class="btn" id="next-proof-btn" aria-label="다음 증명 단계">다음 단계 →</button>
+  </div>
+
+  <div class="next-section" style="margin-top:24px;">
+    <button class="btn btn-outline" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})" aria-label="직접 확인해보기">
+      직접 확인해보기 →
+    </button>
+  </div>
+</section>
+
+<!-- ================================================================== -->
+<!-- Section 4 — Interactive Checker                                    -->
+<!-- ================================================================== -->
+<section id="s4" class="section">
+  <h2 class="section-title">직접 확인해보기</h2>
+  <p class="section-subtitle">슬라이더를 움직여 n에 따른 좌변과 우변을 비교해보세요</p>
+
+  <div class="slider-area">
+    <label for="n-slider">n =</label>
+    <input type="range" id="n-slider" min="1" max="50" value="5" aria-label="n 값 선택">
+    <span class="n-value" id="n-display">5</span>
+  </div>
+
+  <div class="check-grid">
+    <div class="check-card">
+      <h4>좌변 (LHS)</h4>
+      <div class="value" id="lhs-value">15</div>
+      <div class="term-preview" id="lhs-terms">1 + 2 + 3 + 4 + 5</div>
+    </div>
+    <div class="check-eq">=</div>
+    <div class="check-card">
+      <h4>우변 (RHS)</h4>
+      <div class="value" id="rhs-value">15</div>
+      <div class="term-preview" id="rhs-formula">5(5+1)/2 = 15</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <div class="match-badge" id="match-badge">✓ 일치</div>
+  </div>
+</section>
+
+<!-- ================================================================== -->
+<!-- JavaScript                                                         -->
+<!-- ================================================================== -->
+<script>
+(function() {
+
+  /* ===== Configuration ===== */
+  const CONTACT_ANGLE = 21;  // ° — top-left corner touches next domino's left face
+  const MAX_ANGLE = 75;      // ° — fully fallen
+  const CHAIN_DELAY = 150;   // ms between domino starts in chain reaction
+  const FALL_DURATION = 350; // ms for CSS transition (matches CSS)
+
+  /* ===== KaTeX auto-render fallback ===== */
+  function renderAllKaTeX() {
+    if (typeof renderMathInElement === 'function') {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ]
+      });
+    }
+  }
+
+  /* ===== Physics helpers ===== */
+  /**
+   * Calculate domino angles for a partial chain (Section 1).
+   * The last fallen domino contacts the next standing one at CONTACT_ANGLE.
+   * Each preceding domino leans more because the chain pushes back.
+   */
+  function getPartialChainAngles(fallenCount) {
+    if (fallenCount <= 0) return [];
+    if (fallenCount === 1) return [CONTACT_ANGLE];
+    const angles = [];
+    // First fallen domino (index 0) falls the most; last fallen contacts standing
+    const firstMax = Math.min(48, CONTACT_ANGLE + (fallenCount - 1) * 6);
+    for (let i = 0; i < fallenCount; i++) {
+      const t = i / (fallenCount - 1);
+      angles[i] = firstMax - t * (firstMax - CONTACT_ANGLE);
+    }
+    return angles;
+  }
+
+  /**
+   * Calculate domino angles for a full chain (Section 2).
+   * Last domino falls completely (MAX_ANGLE), first domino falls least.
+   * Linear gradient between CONTACT_ANGLE and MAX_ANGLE.
+   */
+  function getFullChainAngles(count) {
+    if (count <= 0) return [];
+    if (count === 1) return [MAX_ANGLE];
+    const angles = [];
+    for (let i = 0; i < count; i++) {
+      const t = i / (count - 1);
+      angles[i] = CONTACT_ANGLE + t * (MAX_ANGLE - CONTACT_ANGLE);
+    }
+    return angles;
+  }
+
+  /* ====================================================== */
+  /*  Section 1 — Domino & Conditions                       */
+  /* ====================================================== */
+
+  const NUM_DOMINOS_S1 = 8;
+  let s1ClickCount = 0;
+  const MAX_CLICKS = 5;
+
+  const dominoRow = document.getElementById('domino-row-s1');
+  const conditionList = document.getElementById('condition-list');
+  const addBtn = document.getElementById('add-condition-btn');
+  const conditionFooter = document.getElementById('condition-footer');
+
+  function buildDominoesS1() {
+    dominoRow.innerHTML = '';
+    for (let i = 0; i < NUM_DOMINOS_S1; i++) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'domino-wrapper';
+      const label = document.createElement('span');
+      label.className = 'index-label';
+      label.textContent = i + 1;
+      const d = document.createElement('div');
+      d.className = 'domino';
+      d.dataset.index = i;
+      wrapper.appendChild(label);
+      wrapper.appendChild(d);
+      dominoRow.appendChild(wrapper);
+    }
+    const ell = document.createElement('span');
+    ell.className = 'ellipsis';
+    ell.textContent = '···';
+    dominoRow.appendChild(ell);
+  }
+
+  function addCondition() {
+    s1ClickCount++;
+
+    // Add condition item to list
+    const li = document.createElement('li');
+    const nth = s1ClickCount + 1;
+    li.textContent = `${numToCircle(nth)} ${nth - 1} → ${nth}`;
+    conditionList.appendChild(li);
+
+    // Recalculate ALL fallen domino angles (chain interaction)
+    const fallenCount = s1ClickCount;
+    const angles = getPartialChainAngles(fallenCount);
+    const allDominos = dominoRow.querySelectorAll('.domino');
+    for (let i = 0; i < fallenCount && i < allDominos.length; i++) {
+      allDominos[i].style.transform = `rotate(${angles[i]}deg)`;
+      allDominos[i].classList.add('fallen');
+    }
+
+    // Show warning after max clicks
+    if (s1ClickCount >= MAX_CLICKS) {
+      addBtn.disabled = true;
+      addBtn.style.opacity = '0.3';
+      addBtn.style.cursor = 'not-allowed';
+      const warn = document.createElement('div');
+      warn.className = 'warning-box';
+      warn.textContent = '⚠ 문제점: 끝이 없다. 조건을 무한히 적을 수 없다.';
+      conditionFooter.parentNode.insertBefore(warn, conditionFooter);
+    }
+  }
+
+  function numToCircle(n) {
+    const circles = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫','⑬','⑭','⑮','⑯','⑰','⑱','⑲','⑳'];
+    return circles[n - 1] || `(${n})`;
+  }
+
+  buildDominoesS1();
+  addBtn.addEventListener('click', addCondition);
+
+  /* ====================================================== */
+  /*  Section 2 — Chain Reaction                            */
+  /* ====================================================== */
+
+  const CHAIN_COUNT = 10;
+  const chainContainer = document.getElementById('domino-chain');
+  const playBtn = document.getElementById('chain-play-btn');
+  const resetBtn = document.getElementById('chain-reset-btn');
+  const chainResult = document.getElementById('chain-result');
+  let chainTimeoutIds = [];
+
+  function buildChain() {
+    chainContainer.innerHTML = '';
+    for (let i = 0; i < CHAIN_COUNT; i++) {
+      const d = document.createElement('div');
+      d.className = 'domino';
+      d.dataset.index = i;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'domino-wrapper';
+      const label = document.createElement('span');
+      label.className = 'index-label';
+      label.textContent = i + 1;
+      wrapper.appendChild(label);
+      wrapper.appendChild(d);
+      chainContainer.appendChild(wrapper);
+    }
+  }
+
+  function playChain() {
+    // Clear any running animation
+    chainTimeoutIds.forEach(id => clearTimeout(id));
+    chainTimeoutIds = [];
+
+    // Reset all dominos
+    const doms = chainContainer.querySelectorAll('.domino');
+    doms.forEach(d => {
+      d.style.transform = 'rotate(0deg)';
+      d.classList.remove('fallen');
+    });
+    chainResult.classList.remove('visible');
+
+    // Force reflow so transitions trigger fresh
+    void chainContainer.offsetWidth;
+
+    // Animate step by step — each step recalculates angles for the growing chain
+    for (let step = 1; step <= CHAIN_COUNT; step++) {
+      const id = setTimeout(() => {
+        const angles = getFullChainAngles(step);
+        for (let j = 0; j < step; j++) {
+          const el = chainContainer.querySelectorAll('.domino')[j];
+          if (el) {
+            el.style.transform = `rotate(${angles[j]}deg)`;
+            el.classList.add('fallen');
+          }
+        }
+        // Show result text after last domino settles
+        if (step === CHAIN_COUNT) {
+          setTimeout(() => {
+            chainResult.classList.add('visible');
+          }, FALL_DURATION + 100);
+        }
+      }, (step - 1) * CHAIN_DELAY);
+      chainTimeoutIds.push(id);
+    }
+  }
+
+  function resetChain() {
+    chainTimeoutIds.forEach(id => clearTimeout(id));
+    chainTimeoutIds = [];
+    const doms = chainContainer.querySelectorAll('.domino');
+    doms.forEach(d => {
+      d.style.transform = 'rotate(0deg)';
+      d.classList.remove('fallen');
+    });
+    chainResult.classList.remove('visible');
+  }
+
+  buildChain();
+  playBtn.addEventListener('click', playChain);
+  resetBtn.addEventListener('click', resetChain);
+
+  /* ====================================================== */
+  /*  Section 3 — Proof Steps                               */
+  /* ====================================================== */
+
+  const proofSteps = document.getElementById('proof-steps');
+  const nextProofBtn = document.getElementById('next-proof-btn');
+  let currentProofStep = 0;
+
+  const proofData = [
+    {
+      label: 'i) n = 1일 때 (Base case)',
+      body: [
+        '좌변 = $1$',
+        '우변 = $\\dfrac{1 \\times 2}{2} = 1$',
+        '좌변 = 우변 = 1 이므로 성립 $\\checkmark$'
+      ]
+    },
+    {
+      label: 'ii) n = k일 때 성립한다고 가정',
+      body: [
+        '$1+2+\\cdots+k = \\dfrac{k(k+1)}{2}$'
+      ]
+    },
+    {
+      label: '양변에 (k+1)을 더하면',
+      body: [
+        '$1+2+\\cdots+k+(k+1) = \\dfrac{k(k+1)}{2} + (k+1)$'
+      ]
+    },
+    {
+      label: '우변 정리',
+      body: [
+        '$\\dfrac{k(k+1)}{2} + (k+1) = \\dfrac{k(k+1) + 2(k+1)}{2}$',
+        '$= \\dfrac{(k+1)(k+2)}{2}$'
+      ]
+    },
+    {
+      label: '결론',
+      body: [
+        '$1+2+\\cdots+(k+1) = \\dfrac{(k+1)\\{(k+1)+1\\}}{2}$',
+        '따라서 n = k+1일 때도 성립한다.',
+        '$\\therefore$ 모든 자연수 $n$에 대하여 성립한다. $\\blacksquare$'
+      ],
+      conclusion: true
+    }
+  ];
+
+  function buildProofCards() {
+    proofSteps.innerHTML = '';
+    proofData.forEach((data, idx) => {
+      const card = document.createElement('div');
+      card.className = 'proof-card' + (data.conclusion ? ' conclusion' : '');
+      card.dataset.index = idx;
+
+      const icon = document.createElement('div');
+      icon.className = 'domino-icon';
+      card.appendChild(icon);
+
+      const body = document.createElement('div');
+      body.className = 'card-body';
+
+      const label = document.createElement('div');
+      label.className = 'step-label';
+      label.textContent = data.label;
+      body.appendChild(label);
+
+      data.body.forEach(line => {
+        const p = document.createElement('p');
+        p.textContent = line;
+        body.appendChild(p);
+      });
+
+      card.appendChild(body);
+      proofSteps.appendChild(card);
+    });
+    renderAllKaTeX();
+  }
+
+  function showNextProofStep() {
+    const cards = proofSteps.querySelectorAll('.proof-card');
+    if (currentProofStep < cards.length) {
+      cards[currentProofStep].classList.add('visible');
+      setTimeout(() => {
+        if (typeof renderMathInElement === 'function') {
+          renderMathInElement(cards[currentProofStep], {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false}
+            ]
+          });
+        }
+      }, 50);
+      currentProofStep++;
+    }
+    if (currentProofStep >= cards.length) {
+      nextProofBtn.disabled = true;
+      nextProofBtn.textContent = '✓ 모든 단계 완료';
+      nextProofBtn.style.opacity = '0.5';
+      nextProofBtn.style.cursor = 'not-allowed';
+    }
+  }
+
+  buildProofCards();
+  showNextProofStep();
+  nextProofBtn.addEventListener('click', showNextProofStep);
+
+  /* ====================================================== */
+  /*  Section 4 — Interactive Checker                       */
+  /* ====================================================== */
+
+  const slider = document.getElementById('n-slider');
+  const nDisplay = document.getElementById('n-display');
+  const lhsValue = document.getElementById('lhs-value');
+  const rhsValue = document.getElementById('rhs-value');
+  const lhsTerms = document.getElementById('lhs-terms');
+  const rhsFormula = document.getElementById('rhs-formula');
+  const matchBadge = document.getElementById('match-badge');
+
+  function updateChecker() {
+    const n = parseInt(slider.value, 10);
+    nDisplay.textContent = n;
+
+    const result = n * (n + 1) / 2;
+    lhsValue.textContent = result;
+    rhsValue.textContent = result;
+
+    if (n <= 10) {
+      const terms = [];
+      for (let i = 1; i <= n; i++) terms.push(i);
+      lhsTerms.textContent = terms.join(' + ');
+    } else {
+      lhsTerms.textContent = `1 + 2 + ... + ${n}`;
+    }
+
+    rhsFormula.textContent = `${n}(${n}+1)/2 = ${result}`;
+    matchBadge.classList.add('visible');
+  }
+
+  slider.addEventListener('input', updateChecker);
+  updateChecker();
+
+  setTimeout(renderAllKaTeX, 200);
+
+})();
+</script>
+</body>
+</html>
