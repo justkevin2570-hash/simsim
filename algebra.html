@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대수 - 수학 교사는 심심했다</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+            padding: 40px 20px;
+        }
+        .back {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            color: rgba(255,255,255,0.35);
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.2s;
+            z-index: 2;
+        }
+        .back:hover { color: rgba(255,255,255,0.7); }
+        h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            text-align: center;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.9rem;
+            margin-bottom: 48px;
+            text-align: center;
+        }
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 20px 28px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f4f4f4;
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            user-select: none;
+            letter-spacing: 0.3px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.13);
+            border-color: rgba(255,255,255,0.25);
+        }
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        .chapter-num {
+            display: inline-block;
+            margin-right: 10px;
+            opacity: 0.5;
+            font-weight: 400;
+        }
+        .footer {
+            margin-top: 56px;
+            color: rgba(255,255,255,0.12);
+            font-size: 0.75rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <a class="back" href="highschool.html">← 뒤로</a>
+
+    <h1>📗 대수</h1>
+    <p class="subtitle">대단원을 선택하세요</p>
+
+    <div class="buttons">
+        <a class="btn" href="#">
+            <span class="chapter-num">Ⅰ.</span> 지수함수와 로그함수
+        </a>
+        <a class="btn" href="#">
+            <span class="chapter-num">Ⅱ.</span> 삼각함수
+        </a>
+        <a class="btn" href="#">
+            <span class="chapter-num">Ⅲ.</span> 수열
+        </a>
+    </div>
+
+    <div class="footer">since 2026</div>
+</body>
+</html>
