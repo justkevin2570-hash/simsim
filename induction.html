@@ -557,11 +557,11 @@
       <div class="induction-box">
         <h3>단 두 가지만 보이면 충분!</h3>
         <div class="induction-item">
-          <span class="badge badge-blue">Base case</span>
+          <span class="badge badge-blue">1.</span>
           <strong>첫 번째 도미노가 쓰러진다</strong>
         </div>
         <div class="induction-item" style="border-left-color:#10b981;">
-          <span class="badge badge-green">Inductive step</span>
+          <span class="badge badge-green">2.</span>
           <strong>k번째 도미노가 쓰러지면 (k+1)번째 도미노가 쓰러진다</strong>
         </div>
       </div>
@@ -653,10 +653,8 @@
 (function() {
 
   /* ===== Configuration ===== */
-  const CONTACT_ANGLE = 21;  // ° — top-left corner touches next domino's left face
-  const MAX_ANGLE = 75;      // ° — fully fallen
-  const CHAIN_DELAY = 150;   // ms between domino starts in chain reaction
-  const FALL_DURATION = 350; // ms for CSS transition (matches CSS)
+  const CHAIN_DELAY = 180;   // ms between domino starts in chain reaction
+  const FALL_DURATION = 400; // ms for each domino to fall
 
   /* ===== KaTeX auto-render fallback ===== */
   function renderAllKaTeX() {
@@ -671,38 +669,17 @@
   }
 
   /* ===== Physics helpers ===== */
-  /**
-   * Calculate domino angles for a partial chain (Section 1).
-   * The last fallen domino contacts the next standing one at CONTACT_ANGLE.
-   * Each preceding domino leans more because the chain pushes back.
-   */
-  function getPartialChainAngles(fallenCount) {
-    if (fallenCount <= 0) return [];
-    if (fallenCount === 1) return [CONTACT_ANGLE];
-    const angles = [];
-    // First fallen domino (index 0) falls the most; last fallen contacts standing
-    const firstMax = Math.min(48, CONTACT_ANGLE + (fallenCount - 1) * 6);
-    for (let i = 0; i < fallenCount; i++) {
-      const t = i / (fallenCount - 1);
-      angles[i] = firstMax - t * (firstMax - CONTACT_ANGLE);
-    }
-    return angles;
-  }
+  const FALL_ANGLE = 68;  // ° — 최종 쓰러진 각도
 
   /**
-   * Calculate domino angles for a full chain (Section 2).
-   * Last domino falls completely (MAX_ANGLE), first domino falls least.
-   * Linear gradient between CONTACT_ANGLE and MAX_ANGLE.
+   * Section 1: 새 조건이 추가되면 다음 도미노 하나를 완전히 쓰러뜨린다.
    */
-  function getFullChainAngles(count) {
-    if (count <= 0) return [];
-    if (count === 1) return [MAX_ANGLE];
-    const angles = [];
-    for (let i = 0; i < count; i++) {
-      const t = i / (count - 1);
-      angles[i] = CONTACT_ANGLE + t * (MAX_ANGLE - CONTACT_ANGLE);
+  function toppleNextDomino(index) {
+    const allDominos = dominoRow.querySelectorAll('.domino');
+    if (index < allDominos.length) {
+      allDominos[index].style.transform = `rotate(${FALL_ANGLE}deg)`;
+      allDominos[index].classList.add('fallen');
     }
-    return angles;
   }
 
   /* ====================================================== */
@@ -748,14 +725,8 @@
     li.textContent = `${numToCircle(nth)} ${nth - 1} → ${nth}`;
     conditionList.appendChild(li);
 
-    // Recalculate ALL fallen domino angles (chain interaction)
-    const fallenCount = s1ClickCount;
-    const angles = getPartialChainAngles(fallenCount);
-    const allDominos = dominoRow.querySelectorAll('.domino');
-    for (let i = 0; i < fallenCount && i < allDominos.length; i++) {
-      allDominos[i].style.transform = `rotate(${angles[i]}deg)`;
-      allDominos[i].classList.add('fallen');
-    }
+    // 다음 도미노를 완전히 쓰러뜨린다
+    toppleNextDomino(s1ClickCount - 1);
 
     // Show warning after max clicks
     if (s1ClickCount >= MAX_CLICKS) {
@@ -813,34 +784,32 @@
     // Reset all dominos
     const doms = chainContainer.querySelectorAll('.domino');
     doms.forEach(d => {
+      d.style.transition = 'none';
       d.style.transform = 'rotate(0deg)';
       d.classList.remove('fallen');
     });
     chainResult.classList.remove('visible');
 
-    // Force reflow so transitions trigger fresh
+    // Force reflow so transitions work fresh
     void chainContainer.offsetWidth;
 
-    // Animate step by step — each step recalculates angles for the growing chain
-    for (let step = 1; step <= CHAIN_COUNT; step++) {
+    // 순차 연쇄 반응: 각 도미노가 한 번씩만 떨어진다
+    doms.forEach((d, i) => {
       const id = setTimeout(() => {
-        const angles = getFullChainAngles(step);
-        for (let j = 0; j < step; j++) {
-          const el = chainContainer.querySelectorAll('.domino')[j];
-          if (el) {
-            el.style.transform = `rotate(${angles[j]}deg)`;
-            el.classList.add('fallen');
-          }
-        }
-        // Show result text after last domino settles
-        if (step === CHAIN_COUNT) {
-          setTimeout(() => {
+        d.style.transition = `transform 0.4s ease-in`;
+        d.style.transform = `rotate(${FALL_ANGLE}deg)`;
+        d.classList.add('fallen');
+
+        // 마지막 도미노가 쓰러진 후 결과 표시
+        if (i === doms.length - 1) {
+          const resultId = setTimeout(() => {
             chainResult.classList.add('visible');
-          }, FALL_DURATION + 100);
+          }, 500);
+          chainTimeoutIds.push(resultId);
         }
-      }, (step - 1) * CHAIN_DELAY);
+      }, i * 180);
       chainTimeoutIds.push(id);
-    }
+    });
   }
 
   function resetChain() {
@@ -848,6 +817,7 @@
     chainTimeoutIds = [];
     const doms = chainContainer.querySelectorAll('.domino');
     doms.forEach(d => {
+      d.style.transition = 'none';
       d.style.transform = 'rotate(0deg)';
       d.classList.remove('fallen');
     });
