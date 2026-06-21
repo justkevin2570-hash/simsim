@@ -359,6 +359,13 @@
       border-color: #10b981;
       background: #ecfdf5;
     }
+    .proof-card.thinking {
+      border: 2px dashed #f59e0b;
+      background: #fffbeb;
+    }
+    .proof-card.thinking .step-label {
+      color: #d97706;
+    }
 
     /* ===== Section 4 — Interactive Checker ===== */
     #s4 .slider-area {
@@ -910,6 +917,7 @@
         },
         {
           label: '🎯 n = k+1일 때 — 목표 확인',
+          thinking: true,
           body: [
             'n = k+1을 처음 식에 대입하면 다음과 같아야 한다.',
             '',
@@ -983,6 +991,7 @@
         },
         {
           label: '🎯 n = k+1일 때 — 목표 확인',
+          thinking: true,
           body: [
             'n = k+1을 처음 식에 대입하면 다음과 같아야 한다.',
             '',
@@ -1049,6 +1058,7 @@
         },
         {
           label: '🎯 n = k+1일 때 — 목표 확인',
+          thinking: true,
           body: [
             'n = k+1을 처음 식에 대입하면 다음과 같아야 한다.',
             '',
@@ -1129,7 +1139,7 @@
 
     const step = data[currentProofStep];
     const card = document.createElement('div');
-    card.className = 'proof-card' + (step.conclusion ? ' conclusion' : '');
+    card.className = 'proof-card' + (step.conclusion ? ' conclusion' : '') + (step.thinking ? ' thinking' : '');
 
     const body = document.createElement('div');
     body.className = 'card-body';
