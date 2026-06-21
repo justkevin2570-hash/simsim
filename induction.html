@@ -764,15 +764,22 @@
       allDominos[i].classList.add('fallen');
     }
 
-    // Show warning after max clicks
-    if (s1ClickCount >= MAX_CLICKS) {
+    // Show warning after max clicks — 2단계로 나누어 출력
+    if (s1ClickCount === MAX_CLICKS) {
+      // 1단계: 문제점만 표시 (학생들이 생각할 시간)
+      const warn = document.createElement('div');
+      warn.className = 'warning-box';
+      warn.id = 'warn-stage1';
+      warn.textContent = '⚠ 문제점:';
+      conditionFooter.parentNode.insertBefore(warn, conditionFooter);
+      addBtn.textContent = '생각해보기 →';
+    } else if (s1ClickCount === MAX_CLICKS + 1) {
+      // 2단계: 전체 메시지 표시
+      const s1 = document.getElementById('warn-stage1');
+      if (s1) s1.textContent = '⚠ 문제점: 끝이 없다. 조건을 무한히 적을 수 없다.';
       addBtn.disabled = true;
       addBtn.style.opacity = '0.3';
       addBtn.style.cursor = 'not-allowed';
-      const warn = document.createElement('div');
-      warn.className = 'warning-box';
-      warn.textContent = '⚠ 문제점: 끝이 없다. 조건을 무한히 적을 수 없다.';
-      conditionFooter.parentNode.insertBefore(warn, conditionFooter);
     }
   }
 
@@ -880,7 +887,15 @@
       problem: '$$1+2+\\cdots+n = \\frac{n(n+1)}{2}$$',
       steps: [
         {
-          label: 'i) n = 1일 때 (Base case)',
+          label: ' ',
+          body: [' ']
+        },
+        {
+          label: 'n = 1일 때',
+          body: [' ']
+        },
+        {
+          label: ' ',
           body: [
             '좌변 = $1$',
             '우변 = $\\dfrac{1 \\times 2}{2} = 1$',
