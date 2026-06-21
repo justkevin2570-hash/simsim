@@ -78,6 +78,85 @@
             opacity: 0.5;
             font-weight: 400;
         }
+
+        /* Toggle button (수열) */
+        .toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 20px 28px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f4f4f4;
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            user-select: none;
+            letter-spacing: 0.3px;
+            transition: all 0.25s ease;
+            font-family: inherit;
+        }
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.13);
+            border-color: rgba(255,255,255,0.25);
+        }
+        .toggle-btn .arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+            opacity: 0.5;
+        }
+        .toggle-btn .arrow.open {
+            transform: rotate(180deg);
+        }
+
+        /* Sub-items container */
+        .sub-items {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.35s ease;
+            width: 100%;
+        }
+        .sub-items.open {
+            grid-template-rows: 1fr;
+        }
+        .sub-items-inner {
+            overflow: hidden;
+        }
+        .sub-btn {
+            display: block;
+            width: 100%;
+            padding: 14px 24px 14px 48px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.75);
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 8px;
+        }
+        .sub-btn:last-child {
+            margin-bottom: 0;
+        }
+        .sub-btn:hover {
+            background: rgba(255,255,255,0.09);
+            color: #f4f4f4;
+            transform: translateX(4px);
+        }
+        .sub-btn .bullet {
+            display: inline-block;
+            margin-right: 10px;
+            opacity: 0.4;
+            font-weight: 400;
+        }
+
         .footer {
             margin-top: 56px;
             color: rgba(255,255,255,0.12);
@@ -99,10 +178,38 @@
         <a class="btn" href="#">
             <span class="chapter-num">Ⅱ.</span> 삼각함수
         </a>
-        <a class="btn" href="#">
-            <span class="chapter-num">Ⅲ.</span> 수열
-        </a>
+
+        <!-- 수열: toggle -->
+        <button class="toggle-btn" onclick="toggleSub()">
+            <span><span class="chapter-num">Ⅲ.</span> 수열</span>
+            <span class="arrow" id="arrow">▼</span>
+        </button>
+        <div class="sub-items" id="subItems">
+            <div class="sub-items-inner">
+                <a class="sub-btn" href="#">
+                    <span class="bullet">·</span> 등차수열
+                </a>
+                <a class="sub-btn" href="#">
+                    <span class="bullet">·</span> 등비수열
+                </a>
+                <a class="sub-btn" href="#">
+                    <span class="bullet">·</span> 여러 가지 수열의 합
+                </a>
+                <a class="sub-btn" href="induction.html">
+                    <span class="bullet">·</span> 수학적 귀납법
+                </a>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function toggleSub() {
+            const items = document.getElementById('subItems');
+            const arrow = document.getElementById('arrow');
+            items.classList.toggle('open');
+            arrow.classList.toggle('open');
+        }
+    </script>
 
     <div class="footer">since 2026</div>
 </body>
