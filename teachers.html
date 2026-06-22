@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동료교사 사이트 | 수학 교사는 심심했다</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(160deg, #0c0b1d 0%, #1a1744 35%, #24204e 70%, #0f0e23 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+            padding: 60px 28px 80px;
+            color: #e0dce8;
+        }
+
+        /* ── 헤더 ── */
+        .header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .header h1 {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: #f0ebf8;
+            letter-spacing: -0.4px;
+        }
+
+        .header .subtitle {
+            color: rgba(240,235,248,0.38);
+            font-size: 0.95rem;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── 사이트 카드 목록 ── */
+        .site-list {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            width: 100%;
+            max-width: 680px;
+        }
+
+        /* ── 카드 ── */
+        .site-card {
+            background: rgba(255,255,255,0.055);
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 18px;
+            padding: 36px 34px 32px;
+            transition: all 0.28s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .site-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+            opacity: 0.7;
+            border-radius: 18px 18px 0 0;
+        }
+
+        .site-card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        }
+
+        /* ── 카드 헤더 ── */
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .card-icon.purple { background: rgba(167,139,250,0.16); color: #a78bfa; }
+        .card-icon.blue   { background: rgba(96,165,250,0.16);  color: #60a5fa; }
+        .card-icon.green  { background: rgba(52,211,153,0.16);  color: #34d399; }
+        .card-icon.amber  { background: rgba(251,191,36,0.16);  color: #fbbf24; }
+        .card-icon.rose   { background: rgba(251,113,133,0.16); color: #fb7185; }
+
+        .card-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #f0ebf8;
+            letter-spacing: -0.2px;
+        }
+
+        .card-tagline {
+            font-size: 0.85rem;
+            color: rgba(240,235,248,0.45);
+            margin-top: 2px;
+        }
+
+        /* ── 카드 설명 ── */
+        .card-desc {
+            font-size: 0.93rem;
+            line-height: 1.7;
+            color: rgba(224,220,232,0.72);
+            margin-bottom: 20px;
+        }
+
+        /* ── 기능 태그 ── */
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .tag {
+            font-size: 0.76rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: rgba(167,139,250,0.1);
+            color: #c4b5fd;
+            border: 1px solid rgba(167,139,250,0.16);
+            letter-spacing: 0.2px;
+        }
+
+        /* ── 버튼 ── */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-primary {
+            background: rgba(167,139,250,0.18);
+            color: #c4b5fd;
+            border: 1px solid rgba(167,139,250,0.25);
+        }
+
+        .btn-primary:hover {
+            background: rgba(167,139,250,0.28);
+            border-color: rgba(167,139,250,0.45);
+            color: #ddd6fe;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: rgba(224,220,232,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.05);
+            color: rgba(224,220,232,0.8);
+            border-color: rgba(255,255,255,0.22);
+        }
+
+        /* ── 더 추가될 영역 ── */
+        .placeholder-card {
+            background: rgba(255,255,255,0.025);
+            border: 2px dashed rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 42px 34px;
+            text-align: center;
+            color: rgba(240,235,248,0.25);
+            font-size: 0.95rem;
+            letter-spacing: 0.4px;
+        }
+
+        .placeholder-card .plus {
+            font-size: 2rem;
+            font-weight: 300;
+            display: block;
+            margin-bottom: 6px;
+            color: rgba(240,235,248,0.15);
+        }
+
+        /* ── 뒤로 가기 ── */
+        .back-link {
+            margin-top: 56px;
+            color: rgba(240,235,248,0.3);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: rgba(240,235,248,0.6);
+        }
+
+        /* ── 통계 배지 ── */
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: rgba(240,235,248,0.5);
+            background: rgba(255,255,255,0.04);
+            border-radius: 8px;
+            padding: 5px 12px;
+            margin-bottom: 6px;
+        }
+
+        /* ── 모바일 ── */
+        @media (max-width: 600px) {
+            body { padding: 36px 14px 56px; }
+            .header h1 { font-size: 1.6rem; }
+            .site-card { padding: 28px 20px 24px; }
+            .card-name { font-size: 1.15rem; }
+            .btn { padding: 9px 16px; font-size: 0.82rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🔗 동료교사 사이트</h1>
+        <p class="subtitle">함께 일하는 선생님들이 만든, 진짜 쓸모 있는 사이트들</p>
+    </div>
+
+    <div class="site-list">
+
+        <!-- ====== Foreducator ====== -->
+        <div class="site-card">
+            <div class="card-top">
+                <div class="card-icon purple">🏫</div>
+                <div>
+                    <div class="card-name">Foreducator</div>
+                    <div class="card-tagline">교사 업무의 모든 것을 한 곳에서</div>
+                </div>
+            </div>
+
+            <div class="stat-badge">✨ 39,000명 이상의 교사가 사용 중</div>
+
+            <p class="card-desc">
+                복잡한 업무를 단순하게, 반복적인 작업을 자동으로. 생활기록부 문구 생성, 논술형 평가 채점,
+                HWPX 문서 자동완성, LaTeX → 한글 수식 변환, 등록부 서명 QR 수합까지 —
+                수업과 업무에 필요한 <strong>35가지 이상의 도구</strong>를 한곳에 모은
+                교사 전용 올인원 워크스페이스입니다.
+            </p>
+
+            <div class="tag-list">
+                <span class="tag">생활기록부 AI 작성</span>
+                <span class="tag">논술형 채점</span>
+                <span class="tag">LaTeX → 한글 수식</span>
+                <span class="tag">서류 수합 QR</span>
+                <span class="tag">시간표 관리</span>
+                <span class="tag">학급 운영</span>
+                <span class="tag">수업 게임·퀴즈</span>
+                <span class="tag">온라인 교무실</span>
+            </div>
+
+            <div class="btn-row">
+                <a class="btn btn-primary" href="https://www.foreducator.com/" target="_blank" rel="noopener noreferrer">
+                    사이트 열기 ↗
+                </a>
+                <a class="btn btn-outline" href="https://www.foreducator.com/workmate" target="_blank" rel="noopener noreferrer">
+                    워크메이트 (업무도구) ↗
+                </a>
+                <a class="btn btn-outline" href="https://www.foreducator.com/classmate" target="_blank" rel="noopener noreferrer">
+                    클래스메이트 (수업도구) ↗
+                </a>
+            </div>
+        </div>
+
+        <!-- ====== 추가 사이트 자리 ====== -->
+        <div class="placeholder-card">
+            <span class="plus">+</span>
+            앞으로 추천할 동료교사 사이트가 여기에 추가될 예정입니다
+        </div>
+
+    </div>
+
+    <a class="back-link" href="index.html">← 메인으로 돌아가기</a>
+
+</body>
+</html>
