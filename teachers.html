@@ -8,6 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
+            position: relative;
             min-height: 100vh;
             background: linear-gradient(160deg, #0c0b1d 0%, #1a1744 35%, #24204e 70%, #0f0e23 100%);
             display: flex;
@@ -205,13 +206,16 @@
             color: rgba(240,235,248,0.15);
         }
 
-        /* ── 뒤로 가기 ── */
+        /* ── 뒤로 가기 (좌측 상단) ── */
         .back-link {
-            margin-top: 56px;
+            position: absolute;
+            top: 28px;
+            left: 34px;
             color: rgba(240,235,248,0.3);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             transition: color 0.2s ease;
+            z-index: 10;
         }
 
         .back-link:hover {
@@ -242,6 +246,8 @@
     </style>
 </head>
 <body>
+
+    <a class="back-link" href="index.html">← 메인으로 돌아가기</a>
 
     <div class="header">
         <h1>🔗 동료교사 사이트</h1>
@@ -300,8 +306,6 @@
         </div>
 
     </div>
-
-    <a class="back-link" href="index.html">← 메인으로 돌아가기</a>
 
 </body>
 </html>
