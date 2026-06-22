@@ -34,7 +34,7 @@
                 inset 0 2px 6px rgba(0,0,0,0.15),
                 0 16px 48px rgba(0,0,0,0.45),
                 0 0 0 4px #3d2616;
-            padding: 56px 32px 48px;
+            padding: 84px 32px 72px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -83,7 +83,7 @@
             color: rgba(245,240,232,0.42);
             font-size: 0.82rem;
             margin-top: 6px;
-            margin-bottom: 48px;
+            margin-bottom: 64px;
             text-align: center;
             filter: url(#chalk-text);
             letter-spacing: 0.3px;
@@ -102,13 +102,12 @@
 
         .chalk-btn {
             position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-grid;
+            place-items: center;
             text-decoration: none;
             cursor: pointer;
             user-select: none;
-            padding: 40px 0 10px;
+            padding: 0;
             transition: transform 0.2s ease;
             flex: 0 0 auto;
         }
@@ -122,16 +121,12 @@
         }
 
         .chalk-btn .circle-svg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            grid-area: 1 / 1;
             pointer-events: none;
         }
 
         .chalk-btn .label {
-            position: relative;
-            z-index: 1;
+            grid-area: 1 / 1;
             color: #f5f0e8;
             font-size: 1.15rem;
             font-weight: 500;
@@ -187,10 +182,10 @@
             }
             .menu {
                 flex-direction: column;
-                gap: 10px;
+                gap: 14px;
             }
             .chalk-btn {
-                padding: 5px 0;
+                padding: 0;
             }
             .chalk-btn .label {
                 font-size: 1.05rem;
