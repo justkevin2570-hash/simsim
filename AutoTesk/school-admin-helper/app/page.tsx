@@ -3,6 +3,14 @@ import { SearchBox } from '@/components/SearchBox';
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+      {/* 메인으로 돌아가기 */}
+      <a
+        href="https://simsim-five.vercel.app"
+        className="fixed top-6 left-6 text-gray-400 hover:text-gray-600 text-sm transition-colors z-[100]"
+      >
+        ← 메인으로 돌아가기
+      </a>
+
       {/*
         상단 여백을 조금 끌어올려서 검색창이 시각적인 정중앙보다 약간 위에 위치하도록 조정
         (일반적으로 검색 엔진 메인 화면들이 사용하는 비율입니다)
