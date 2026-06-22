@@ -25,7 +25,7 @@
         .chalkboard {
             position: relative;
             width: 100%;
-            max-width: 540px;
+            max-width: 620px;
             background: linear-gradient(178deg, #2d4f3e 0%, #244535 30%, #1e3828 100%);
             border: 12px solid #5c3d2e;
             border-radius: 5px;
@@ -34,7 +34,7 @@
                 inset 0 2px 6px rgba(0,0,0,0.15),
                 0 16px 48px rgba(0,0,0,0.45),
                 0 0 0 4px #3d2616;
-            padding: 46px 32px 40px;
+            padding: 56px 32px 48px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -54,7 +54,7 @@
         /* ── 분필 받침대 ── */
         .chalk-tray {
             width: calc(100% + 32px);
-            max-width: 572px;
+            max-width: 652px;
             height: 12px;
             background: linear-gradient(180deg, #6b4530 0%, #523222 40%, #3d2214 100%);
             border-radius: 0 0 4px 4px;
@@ -83,7 +83,7 @@
             color: rgba(245,240,232,0.42);
             font-size: 0.82rem;
             margin-top: 6px;
-            margin-bottom: 38px;
+            margin-bottom: 48px;
             text-align: center;
             filter: url(#chalk-text);
             letter-spacing: 0.3px;
@@ -92,10 +92,12 @@
         /* ── 메뉴 ── */
         .menu {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            gap: 14px;
+            justify-content: center;
+            gap: 8px;
             width: 100%;
+            flex-wrap: wrap;
         }
 
         .chalk-btn {
@@ -106,8 +108,9 @@
             text-decoration: none;
             cursor: pointer;
             user-select: none;
-            padding: 5px 0;
+            padding: 40px 0 10px;
             transition: transform 0.2s ease;
+            flex: 0 0 auto;
         }
 
         .chalk-btn:hover:not(.disabled) {
@@ -169,9 +172,9 @@
         }
 
         /* ── 모바일 미세조정 ── */
-        @media (max-width: 480px) {
+        @media (max-width: 560px) {
             .chalkboard {
-                padding: 34px 20px 30px;
+                padding: 34px 16px 30px;
                 border-width: 8px;
                 box-shadow:
                     inset 0 0 50px rgba(0,0,0,0.25),
@@ -182,11 +185,17 @@
                 width: calc(100% + 20px);
                 height: 9px;
             }
+            .menu {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .chalk-btn {
+                padding: 5px 0;
+            }
             .chalk-btn .label {
                 font-size: 1.05rem;
                 padding: 2px 14px;
             }
-            .menu { gap: 10px; }
         }
     </style>
 </head>
@@ -219,45 +228,45 @@
         <div class="menu">
             <!-- 업무 자동화 — 노란 분필 -->
             <a class="chalk-btn" href="https://auto-tesk.vercel.app/" target="_blank" rel="noopener noreferrer">
-                <svg class="circle-svg" width="210" height="54" viewBox="0 0 210 54">
-                    <ellipse cx="105" cy="27" rx="101" ry="24" fill="none"
-                        stroke="#e8c840" stroke-width="2.2" stroke-dasharray="8 3"
+                <svg class="circle-svg" width="170" height="52" viewBox="0 0 170 52">
+                    <ellipse cx="85" cy="26" rx="81" ry="22" fill="none"
+                        stroke="#e8c840" stroke-width="2.2"
                         stroke-linecap="round" opacity="0.82"
-                        filter="url(#chalk-stroke)" transform="rotate(-1.6, 105, 27)"/>
-                    <ellipse cx="105" cy="27" rx="97" ry="20" fill="none"
-                        stroke="#e8c840" stroke-width="0.7" stroke-dasharray="4 7"
+                        filter="url(#chalk-stroke)" transform="rotate(-1.6, 85, 26)"/>
+                    <ellipse cx="85" cy="26" rx="77" ry="18" fill="none"
+                        stroke="#e8c840" stroke-width="0.7"
                         stroke-linecap="round" opacity="0.3"
-                        filter="url(#chalk-stroke)" transform="rotate(2.1, 105, 27)"/>
+                        filter="url(#chalk-stroke)" transform="rotate(2.1, 85, 26)"/>
                 </svg>
                 <span class="label">업무 자동화</span>
             </a>
 
             <!-- 수학 — 파란 분필 -->
             <a class="chalk-btn" href="Math/select.html">
-                <svg class="circle-svg" width="210" height="54" viewBox="0 0 210 54">
-                    <ellipse cx="105" cy="27" rx="101" ry="24" fill="none"
-                        stroke="#6098d0" stroke-width="2.2" stroke-dasharray="8 3"
+                <svg class="circle-svg" width="170" height="52" viewBox="0 0 170 52">
+                    <ellipse cx="85" cy="26" rx="81" ry="22" fill="none"
+                        stroke="#6098d0" stroke-width="2.2"
                         stroke-linecap="round" opacity="0.82"
-                        filter="url(#chalk-stroke)" transform="rotate(1.4, 105, 27)"/>
-                    <ellipse cx="105" cy="27" rx="97" ry="20" fill="none"
-                        stroke="#6098d0" stroke-width="0.7" stroke-dasharray="4 7"
+                        filter="url(#chalk-stroke)" transform="rotate(1.4, 85, 26)"/>
+                    <ellipse cx="85" cy="26" rx="77" ry="18" fill="none"
+                        stroke="#6098d0" stroke-width="0.7"
                         stroke-linecap="round" opacity="0.3"
-                        filter="url(#chalk-stroke)" transform="rotate(-1.9, 105, 27)"/>
+                        filter="url(#chalk-stroke)" transform="rotate(-1.9, 85, 26)"/>
                 </svg>
                 <span class="label">수학</span>
             </a>
 
             <!-- 동료교사 사이트 — 붉은 분필 (disabled) -->
             <span class="chalk-btn disabled">
-                <svg class="circle-svg" width="210" height="54" viewBox="0 0 210 54">
-                    <ellipse cx="105" cy="27" rx="101" ry="24" fill="none"
-                        stroke="#e07060" stroke-width="2.2" stroke-dasharray="8 3"
+                <svg class="circle-svg" width="170" height="52" viewBox="0 0 170 52">
+                    <ellipse cx="85" cy="26" rx="81" ry="22" fill="none"
+                        stroke="#e07060" stroke-width="2.2"
                         stroke-linecap="round" opacity="0.82"
-                        filter="url(#chalk-stroke)" transform="rotate(-2.1, 105, 27)"/>
-                    <ellipse cx="105" cy="27" rx="97" ry="20" fill="none"
-                        stroke="#e07060" stroke-width="0.7" stroke-dasharray="4 7"
+                        filter="url(#chalk-stroke)" transform="rotate(-2.1, 85, 26)"/>
+                    <ellipse cx="85" cy="26" rx="77" ry="18" fill="none"
+                        stroke="#e07060" stroke-width="0.7"
                         stroke-linecap="round" opacity="0.3"
-                        filter="url(#chalk-stroke)" transform="rotate(1.1, 105, 27)"/>
+                        filter="url(#chalk-stroke)" transform="rotate(1.1, 85, 26)"/>
                 </svg>
                 <span class="label">동료교사 사이트</span>
             </span>
@@ -269,7 +278,7 @@
     <!-- 분필 받침대 -->
     <div class="chalk-tray"></div>
 
-    <p class="footer">since 2025</p>
+    <p class="footer">since 2026</p>
 
 </body>
 </html>
