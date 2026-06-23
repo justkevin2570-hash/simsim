@@ -10,6 +10,19 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
   <style>
+    /* ===== Back ===== */
+    .back {
+      position: fixed;
+      top: 20px;
+      left: 24px;
+      color: rgba(0,0,0,0.3);
+      font-size: 0.88rem;
+      text-decoration: none;
+      transition: color 0.2s;
+      z-index: 100;
+      font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
+    }
+    .back:hover { color: rgba(0,0,0,0.6); }
     /* ===== Reset & Base ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -504,6 +517,8 @@
   </style>
 </head>
 <body>
+
+<a class="back" href="../">← 뒤로</a>
 
 <!-- ================================================================== -->
 <!-- Section 0 — Title                                                  -->
