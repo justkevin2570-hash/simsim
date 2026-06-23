@@ -6,7 +6,7 @@ export default function Home() {
       {/* 메인으로 돌아가기 */}
       <a
         href="https://simsim-five.vercel.app/work.html"
-        className="inline-block text-gray-400 hover:text-gray-600 text-2xl transition-colors mb-10"
+        className="inline-block text-gray-400 hover:text-gray-600 text-sm transition-colors mb-10"
       >
         ← 뒤로
       </a>
