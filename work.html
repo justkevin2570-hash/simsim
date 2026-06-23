@@ -64,25 +64,17 @@
             align-items: center;
             background: #fffdf5;
             border: 1px solid #e7e5e4;
+            border-top: 3px solid #d97706;
             border-radius: 16px;
             padding: 24px 28px;
             transition: all 0.25s ease;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
             color: inherit;
-        }
-        .site-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #d97706, #e8c840, #f59e0b);
-            border-radius: 16px 16px 0 0;
+            cursor: pointer;
         }
         .site-card:hover {
             border-color: #d6d3d1;
+            border-top-color: #b45309;
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.08);
         }
