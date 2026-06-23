@@ -5,10 +5,10 @@ export default function Home() {
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
       {/* 메인으로 돌아가기 */}
       <a
-        href="https://simsim-five.vercel.app"
+        href="https://simsim-five.vercel.app/work.html"
         className="fixed top-6 left-6 text-gray-400 hover:text-gray-600 text-sm transition-colors z-[100]"
       >
-        ← 메인으로 돌아가기
+        ← 뒤로
       </a>
 
       {/*
