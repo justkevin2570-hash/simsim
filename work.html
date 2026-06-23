@@ -20,12 +20,14 @@
 
         /* ── 뒤로 가기 ── */
         .back-to-main {
-            display: inline-block;
+            position: fixed;
+            top: 24px;
+            left: 24px;
             color: rgba(0,0,0,0.3);
             font-size: 0.9rem;
             text-decoration: none;
             transition: color 0.2s;
-            margin-bottom: 40px;
+            z-index: 10;
         }
         .back-to-main:hover { color: rgba(0,0,0,0.55); }
 
