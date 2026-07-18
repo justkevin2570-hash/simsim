@@ -23,8 +23,7 @@ export function MyTaskPanel() {
 
   const handleSelectTask = (taskId: number) => {
     setActiveTaskId(taskId);
-    const task = guides.find((g) => g.taskId === taskId);
-    setActiveStep(task && task.steps.length > 0 ? task.steps[0].stepOrder : null);
+    setActiveStep(null);
   };
 
   return (

@@ -28,7 +28,7 @@ export function ViewPanel() {
 
   const handleSelectTask = (task: Guide) => {
     setActiveTaskId(task.taskId);
-    setActiveStep(task.steps.length > 0 ? task.steps[0].stepOrder : null);
+    setActiveStep(null);
     setQuery(task.taskName);
     setShowDropdown(false);
   };
