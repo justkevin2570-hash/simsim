@@ -264,6 +264,15 @@ export const useGuideStore = create<GuideStore>()(
         return nextId;
       },
     }),
-    { name: 'autotesk_guides', partialize: (state) => ({ guides: state.guides }) },
+    {
+      name: 'autotesk_guides',
+      partialize: (state) => ({ guides: state.guides }),
+      version: 1,
+      migrate: (persisted) => {
+        // version 0→1: guides만 유지, activeTaskId 등 제거
+        const old = persisted as { guides?: unknown };
+        return { guides: old?.guides ?? [] };
+      },
+    },
   ),
 );
