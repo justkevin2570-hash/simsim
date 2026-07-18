@@ -11,7 +11,7 @@ import { useGuideStore } from '@/lib/guideStore';
 export function AdminPanel({
   onTabChange,
 }: {
-  onTabChange?: (tab: 'view' | 'build' | 'admin') => void;
+  onTabChange?: (tab: 'view' | 'mytask' | 'build' | 'admin') => void;
 }) {
   const [rawJson, setRawJson] = useState('');
   const [parsed, setParsed] = useState<any>(null);

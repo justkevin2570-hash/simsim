@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useGuideStore } from '@/lib/guideStore';
+import { useMyTaskStore } from '@/lib/myTaskStore';
 
 type BuilderStep = {
   id: number;
@@ -25,9 +26,10 @@ function buildMermaidCode(taskName: string, steps: BuilderStep[]): string {
 export function BuilderPanel({
   onTabChange,
 }: {
-  onTabChange?: (tab: 'view' | 'build' | 'admin') => void;
+  onTabChange?: (tab: 'view' | 'mytask' | 'build' | 'admin') => void;
 }) {
-  const { builderPreset, setBuilderPreset, setAdminPendingJson } = useGuideStore();
+  const { builderPreset, setBuilderPreset, setAdminPendingJson, addGuide, getNextId } = useGuideStore();
+  const { addMyTask } = useMyTaskStore();
 
   const [taskName, setTaskName] = useState('');
   const [category, setCategory] = useState('학생지도/행사');
@@ -105,6 +107,32 @@ export function BuilderPanel({
   // JSON 생성 & 모달
   const [showModal, setShowModal] = useState(false);
   const [jsonOutput, setJsonOutput] = useState('');
+
+  /** 현재 폼 데이터를 로컬 내 업무에 저장 */
+  const saveToMyTasks = () => {
+    if (!taskName.trim()) {
+      alert('업무명을 입력해주세요.');
+      return;
+    }
+    const newId = getNextId();
+    addGuide({
+      taskId: newId,
+      taskName,
+      category,
+      keywords,
+      source: 'custom',
+      createdAt: new Date().toISOString().split('T')[0],
+      steps: steps.map((s, i) => ({
+        stepOrder: i + 1,
+        stepName: s.name,
+        guideText: s.guide,
+        files: s.file ? [{ name: s.file, url: '#' }] : [],
+      })),
+    });
+    addMyTask(newId);
+    alert(`✅ "${taskName}"이(가) 내 업무에 저장되었습니다.`);
+    onTabChange?.('mytask');
+  };
 
   const generateJson = () => {
     if (!taskName.trim()) {
@@ -307,19 +335,28 @@ export function BuilderPanel({
               <span className="mr-1">💡</span>설계를 마치셨나요?
             </p>
             <p className="text-amber-700">
-              하단의 &apos;제출용 데이터 생성&apos; 버튼을 눌러 JSON을
-              관리자에게 전송해주세요!
+              지금 바로 내 컴퓨터에 저장하려면 &apos;내 업무에 저장&apos;을,
+              관리자에게 제출하려면 &apos;제출용 데이터 생성&apos;을 눌러주세요.
             </p>
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={generateJson}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md shadow-blue-100 cursor-pointer text-sm"
-        >
-          <span className="mr-2">📤</span>제출용 데이터 생성하기
-        </button>
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={saveToMyTasks}
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md shadow-emerald-100 cursor-pointer text-sm"
+          >
+            <span className="mr-2">💾</span>내 업무에 저장
+          </button>
+          <button
+            type="button"
+            onClick={generateJson}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-md shadow-blue-100 cursor-pointer text-sm"
+          >
+            <span className="mr-2">📤</span>제출용 데이터 생성하기
+          </button>
+        </div>
       </section>
 
       {/* JSON 출력 모달 */}
