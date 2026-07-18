@@ -264,6 +264,6 @@ export const useGuideStore = create<GuideStore>()(
         return nextId;
       },
     }),
-    { name: 'autotesk_guides' },
+    { name: 'autotesk_guides', partialize: (state) => ({ guides: state.guides }) },
   ),
 );
