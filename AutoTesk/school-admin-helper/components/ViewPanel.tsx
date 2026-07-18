@@ -150,7 +150,7 @@ export function ViewPanel() {
                     onClick={() => addMyTask(activeGuide.taskId)}
                     className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors cursor-pointer whitespace-nowrap"
                   >
-                    ⭐ 추가
+                    ⭐ 내 업무 추가
                   </button>
                 )}
               </div>
