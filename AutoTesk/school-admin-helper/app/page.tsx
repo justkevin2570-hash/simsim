@@ -16,7 +16,7 @@ export default function Home() {
     <>
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {activeTab === 'view' && <ViewPanel />}
+      {activeTab === 'view' && <ViewPanel onTabChange={setActiveTab} />}
       {activeTab === 'mytask' && <MyTaskPanel />}
       {activeTab === 'build' && <BuilderPanel onTabChange={setActiveTab} />}
       {activeTab === 'admin' && <AdminPanel onTabChange={setActiveTab} />}

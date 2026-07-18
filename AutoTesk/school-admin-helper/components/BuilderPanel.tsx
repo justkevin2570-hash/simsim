@@ -1,32 +1,65 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useGuideStore } from '@/lib/guideStore';
 
 type BuilderStep = {
   id: number;
   name: string;
   guide: string;
+  file?: string;
 };
+
+function buildMermaidCode(taskName: string, steps: BuilderStep[]): string {
+  const name = taskName || '신규 업무';
+  const lines = steps.map(
+    (s, i) => `    s${i}["${i + 1}. ${s.name.replace(/"/g, '')}"]`,
+  );
+  const arrows = steps.slice(0, -1).map((_, i) => `    s${i} --> s${i + 1}`);
+  return `graph TD\n${lines.join('\n')}\n${arrows.join('\n')}`;
+}
 
 /**
  * 선생님용 업무 제작기 탭
- * 좌측: 업무 메타 정보 + 단계 편집기
- * 우측: Mermaid 흐름도 미리보기 + 제출
  */
 export function BuilderPanel({
   onTabChange,
 }: {
   onTabChange?: (tab: 'view' | 'build' | 'admin') => void;
 }) {
+  const { builderPreset, setBuilderPreset, setAdminPendingJson } = useGuideStore();
+
   const [taskName, setTaskName] = useState('');
   const [category, setCategory] = useState('학생지도/행사');
   const [keywords, setKeywords] = useState('');
-  const [steps, setSteps] = useState<BuilderStep[]>([
-    { id: 1, name: '계획안 내부결재', guide: '행정의 시작이므로, 먼저 계획을 구체적으로 세워 기안을 올립니다.' },
-    { id: 2, name: '품의 및 예산 확인', guide: '학교 예산 포털에 필요한 품목의 수량과 단가를 명시해 에듀파인에 올립니다.' },
-  ]);
+  const [steps, setSteps] = useState<BuilderStep[]>([]);
   const mermaidRef = useRef<HTMLDivElement>(null);
-  const nextIdRef = useRef(3);
+  const nextIdRef = useRef(1);
+
+  // builderPreset이 있으면 폼에 자동 채움
+  useEffect(() => {
+    if (builderPreset) {
+      setTaskName(builderPreset.taskName);
+      setCategory(builderPreset.category);
+      setKeywords(builderPreset.keywords);
+      setSteps(
+        builderPreset.steps.map((s, i) => ({
+          id: i + 1,
+          name: s.stepName,
+          guide: s.guideText,
+          file: s.files?.[0]?.name || '',
+        })),
+      );
+      nextIdRef.current = builderPreset.steps.length + 1;
+      setBuilderPreset(null);
+    } else if (steps.length === 0) {
+      // 초기값: 빈 상태로 시작
+      const id = nextIdRef.current++;
+      setSteps([
+        { id, name: '계획안 내부결재', guide: '행정의 시작이므로, 먼저 계획을 구체적으로 세워 기안을 올립니다.' },
+      ]);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addStep = () => {
     const id = nextIdRef.current++;
@@ -38,35 +71,34 @@ export function BuilderPanel({
     setSteps(steps.filter((s) => s.id !== id));
   };
 
-  const updateStep = (id: number, key: 'name' | 'guide', val: string) => {
+  const moveStep = (idx: number, dir: 'up' | 'down') => {
+    const target = dir === 'up' ? idx - 1 : idx + 1;
+    if (target < 0 || target >= steps.length) return;
+    const next = [...steps];
+    [next[idx], next[target]] = [next[target], next[idx]];
+    setSteps(next);
+  };
+
+  const updateStep = (id: number, key: keyof BuilderStep, val: string) => {
     setSteps(steps.map((s) => (s.id === id ? { ...s, [key]: val } : s)));
   };
 
-  // Mermaid 차트 업데이트
+  // Mermaid 차트
   const renderMermaid = useCallback(async () => {
     if (!mermaidRef.current) return;
-    const name = taskName || '신규 업무';
-    const lines = steps.map(
-      (s, i) => `    s${i}["${i + 1}. ${s.name.replace(/"/g, '')}"]`,
-    );
-    const arrows = steps
-      .slice(0, -1)
-      .map((_, i) => `    s${i} --> s${i + 1}`);
-    const code = `graph TD\n${lines.join('\n')}\n${arrows.join('\n')}`;
-
     try {
       const mermaid = await import('mermaid');
-      mermaidRef.current.innerHTML = `<div class="mermaid-svg">${code}</div>`;
-      mermaidRef.current.removeAttribute('data-processed');
-      // Re-run mermaid on the new content
-      mermaid.default.run({ nodes: [mermaidRef.current.querySelector('.mermaid-svg')!] });
+      mermaid.default.initialize({ startOnLoad: false, theme: 'default' });
+      const code = buildMermaidCode(taskName, steps);
+      const { svg } = await mermaid.default.render('mermaid-svg-' + Date.now(), code);
+      mermaidRef.current.innerHTML = svg;
     } catch {
-      // Mermaid not loaded yet
+      // silent
     }
   }, [taskName, steps]);
 
   useEffect(() => {
-    const timer = setTimeout(renderMermaid, 300);
+    const timer = setTimeout(renderMermaid, 500);
     return () => clearTimeout(timer);
   }, [renderMermaid]);
 
@@ -83,10 +115,10 @@ export function BuilderPanel({
       taskName,
       category,
       keywords,
-      steps: steps.map((s, i) => ({
+      steps: steps.map((s) => ({
         stepName: s.name,
         guideText: s.guide,
-        files: [] as { name: string; url: string }[],
+        files: s.file ? [{ name: s.file, url: '#' }] : [],
       })),
     };
     setJsonOutput(JSON.stringify(payload, null, 2));
@@ -176,15 +208,36 @@ export function BuilderPanel({
                   <span className="text-xs font-bold text-slate-500">
                     단계 {String(idx + 1).padStart(2, '0')}
                   </span>
-                  {steps.length > 1 && (
+                  <div className="flex items-center gap-1">
                     <button
                       type="button"
-                      onClick={() => removeStep(step.id)}
-                      className="text-slate-400 hover:text-red-500 text-xs cursor-pointer"
+                      onClick={() => moveStep(idx, 'up')}
+                      disabled={idx === 0}
+                      className="text-slate-400 hover:text-blue-500 text-xs p-1 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                      title="위로"
                     >
-                      <span className="mr-1">🗑</span>삭제
+                      ↑
                     </button>
-                  )}
+                    <button
+                      type="button"
+                      onClick={() => moveStep(idx, 'down')}
+                      disabled={idx === steps.length - 1}
+                      className="text-slate-400 hover:text-blue-500 text-xs p-1 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                      title="아래로"
+                    >
+                      ↓
+                    </button>
+                    {steps.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeStep(step.id)}
+                        className="text-slate-400 hover:text-red-500 text-xs p-1 cursor-pointer"
+                        title="삭제"
+                      >
+                        🗑
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold text-slate-400 mb-1">
@@ -194,6 +247,18 @@ export function BuilderPanel({
                     type="text"
                     value={step.name}
                     onChange={(e) => updateStep(step.id, 'name', e.target.value)}
+                    className="w-full border border-slate-200 bg-white rounded-lg px-2.5 py-1.5 text-xs focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-1">
+                    예시 파일명 (옵션)
+                  </label>
+                  <input
+                    type="text"
+                    value={step.file || ''}
+                    onChange={(e) => updateStep(step.id, 'file', e.target.value)}
+                    placeholder="예: 계획서 표준안.hwp"
                     className="w-full border border-slate-200 bg-white rounded-lg px-2.5 py-1.5 text-xs focus:outline-none"
                   />
                 </div>
@@ -226,7 +291,6 @@ export function BuilderPanel({
             </p>
           </div>
 
-          {/* Mermaid 차트 영역 */}
           <div
             ref={mermaidRef}
             className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex items-center justify-center min-h-[220px] overflow-auto"
@@ -238,19 +302,17 @@ export function BuilderPanel({
             </div>
           </div>
 
-          {/* 안내 */}
           <div className="bg-amber-50/50 border border-amber-100 p-4 rounded-xl text-xs text-amber-900 leading-relaxed">
             <p className="font-bold mb-1">
               <span className="mr-1">💡</span>설계를 마치셨나요?
             </p>
             <p className="text-amber-700">
-              하단의 &apos;제출용 데이터 생성&apos; 버튼을 눌러 생성된 JSON을
-              복사한 뒤, 관리자에게 전송해주세요!
+              하단의 &apos;제출용 데이터 생성&apos; 버튼을 눌러 JSON을
+              관리자에게 전송해주세요!
             </p>
           </div>
         </div>
 
-        {/* 제출 버튼 */}
         <button
           type="button"
           onClick={generateJson}
@@ -278,8 +340,7 @@ export function BuilderPanel({
               </button>
             </div>
             <p className="text-xs text-slate-500 mb-3">
-              아래 데이터를 그대로 복사하여 관리자에게 메일이나 카톡으로
-              전송해 주세요.
+              아래 데이터를 복사하거나, 관리자 반영기로 바로 보낼 수 있습니다.
             </p>
             <textarea
               readOnly
@@ -295,7 +356,18 @@ export function BuilderPanel({
                 }}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-sm transition-colors cursor-pointer"
               >
-                📋 전체 복사하기
+                📋 복사하기
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAdminPendingJson(jsonOutput);
+                  setShowModal(false);
+                  onTabChange?.('admin');
+                }}
+                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-sm transition-colors cursor-pointer"
+              >
+                🔐 반영기로 보내기
               </button>
               <button
                 type="button"

@@ -191,15 +191,18 @@ type GuideStore = {
   updateGuide: (taskId: number, updates: Partial<Guide>) => void;
   removeGuide: (taskId: number) => void;
   getNextId: () => number;
-  /** 검색: taskName / keywords / category 매칭 */
   searchGuides: (query: string) => Guide[];
-  /** builder에서 제출된 JSON을 admin-added로 추가 */
   addSubmittedGuide: (data: {
     taskName: string;
     category: string;
     keywords: string;
     steps: { stepName: string; guideText: string; files?: GuideFile[] }[];
   }) => number;
+  // builder <-> admin 연동
+  builderPreset: Guide | null;
+  setBuilderPreset: (guide: Guide | null) => void;
+  adminPendingJson: string | null;
+  setAdminPendingJson: (json: string | null) => void;
 };
 
 export const useGuideStore = create<GuideStore>()(
@@ -263,6 +266,10 @@ export const useGuideStore = create<GuideStore>()(
         set({ guides: [...guides, newGuide] });
         return nextId;
       },
+      builderPreset: null,
+      setBuilderPreset: (guide) => set({ builderPreset: guide }),
+      adminPendingJson: null,
+      setAdminPendingJson: (json) => set({ adminPendingJson: json }),
     }),
     {
       name: 'autotesk_guides',

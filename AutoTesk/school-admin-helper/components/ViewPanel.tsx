@@ -5,13 +5,17 @@ import { useGuideStore, type Guide } from '@/lib/guideStore';
 import { useMyTaskStore } from '@/lib/myTaskStore';
 import { ViewDetail } from '@/components/ViewDetail';
 
+type ViewPanelProps = {
+  onTabChange?: (tab: 'view' | 'mytask' | 'build' | 'admin') => void;
+};
+
 /**
  * 업무 검색 및 조회 탭
  * 좌측: 검색창(드롭다운 결과) + STEP 흐름도
  * 우측: 상세 매뉴얼
  */
-export function ViewPanel() {
-  const { guides, searchGuides, activeTaskId, setActiveTaskId } =
+export function ViewPanel({ onTabChange }: ViewPanelProps = {}) {
+  const { guides, searchGuides, activeTaskId, setActiveTaskId, setBuilderPreset } =
     useGuideStore();
   const { isMyTask, addMyTask, removeMyTask } = useMyTaskStore();
   const [query, setQuery] = useState('');
@@ -210,7 +214,8 @@ export function ViewPanel() {
               <button
                 type="button"
                 onClick={() => {
-                  /* TODO: switch to build tab with data */
+                  setBuilderPreset(activeGuide);
+                  onTabChange?.('build');
                 }}
                 className="bg-blue-600 text-white text-xs font-bold px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer shrink-0"
               >

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGuideStore } from '@/lib/guideStore';
 
 /**
@@ -18,7 +18,20 @@ export function AdminPanel({
   const [verifyBadge, setVerifyBadge] = useState(false);
   const [tsCode, setTsCode] = useState('');
   const [storeCode, setStoreCode] = useState('');
-  const { addSubmittedGuide } = useGuideStore();
+  const { addSubmittedGuide, adminPendingJson, setAdminPendingJson } = useGuideStore();
+
+  // builder에서 보낸 JSON 자동 수신
+  useEffect(() => {
+    if (adminPendingJson) {
+      setRawJson(adminPendingJson);
+      setAdminPendingJson(null);
+      // 자동 분석
+      setTimeout(() => {
+        const btn = document.querySelector('[data-admin-parse]') as HTMLButtonElement;
+        btn?.click();
+      }, 100);
+    }
+  }, [adminPendingJson, setAdminPendingJson]);
 
   /** JSON 분석 및 TypeScript 코드 생성 */
   const handleParse = () => {
@@ -148,6 +161,7 @@ registerGuide({
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
+            data-admin-parse
             onClick={handleParse}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl text-xs transition-colors cursor-pointer"
           >
