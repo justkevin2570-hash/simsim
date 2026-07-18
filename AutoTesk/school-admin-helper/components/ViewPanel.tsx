@@ -18,6 +18,8 @@ export function ViewPanel() {
   const [activeStep, setActiveStep] = useState<number | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const leftPanelRef = useRef<HTMLElement>(null);
+  const rightPanelRef = useRef<HTMLElement>(null);
 
   const results = useMemo(() => searchGuides(query), [query, guides]);
 
@@ -44,10 +46,23 @@ export function ViewPanel() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  /** STEP 클릭 시 우측 패널을 같은 높이로 스크롤 */
+  const handleStepClick = (stepOrder: number) => {
+    setActiveStep(stepOrder);
+    if (!leftPanelRef.current || !rightPanelRef.current) return;
+    const btn = leftPanelRef.current.querySelector(`[data-step="${stepOrder}"]`) as HTMLElement | null;
+    if (!btn) return;
+    const leftRect = leftPanelRef.current.getBoundingClientRect();
+    const btnRect = btn.getBoundingClientRect();
+    const relativeTop = btnRect.top - leftRect.top;
+    // container padding 보정 (p-5 = 20px)
+    rightPanelRef.current.scrollTo({ top: Math.max(0, relativeTop - 20), behavior: 'smooth' });
+  };
+
   return (
     <div className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
       {/* 좌측: 검색 + STEP 흐름도 (5col) */}
-      <section className="md:col-span-5 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+      <section ref={leftPanelRef} className="md:col-span-5 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-120px)]">
         {/* 검색 */}
         <div ref={searchRef} className="relative">
           <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
@@ -128,7 +143,8 @@ export function ViewPanel() {
                   <div key={step.stepOrder}>
                     <button
                       type="button"
-                      onClick={() => setActiveStep(step.stepOrder)}
+                      data-step={step.stepOrder}
+                      onClick={() => handleStepClick(step.stepOrder)}
                       className={`w-full text-left p-3.5 rounded-xl border-2 transition-all cursor-pointer shadow-xs ${
                         isActive
                           ? 'border-blue-600 bg-blue-50/50'
@@ -211,7 +227,7 @@ export function ViewPanel() {
       </section>
 
       {/* 우측: 상세 매뉴얼 (7col) */}
-      <section className="md:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col">
+      <section ref={rightPanelRef} className="md:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col overflow-y-auto max-h-[calc(100vh-120px)]">
         {activeStepData ? (
           <ViewDetail
             guide={activeGuide!}

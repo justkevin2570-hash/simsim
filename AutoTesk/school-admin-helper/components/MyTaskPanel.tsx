@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useGuideStore } from '@/lib/guideStore';
 import { useMyTaskStore } from '@/lib/myTaskStore';
 import { ViewDetail } from '@/components/ViewDetail';
@@ -14,6 +14,8 @@ export function MyTaskPanel() {
   const { myTasks, getMyGuides, removeMyTask } = useMyTaskStore();
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
   const [activeStep, setActiveStep] = useState<number | null>(null);
+  const leftRef = useRef<HTMLElement>(null);
+  const rightRef = useRef<HTMLElement>(null);
 
   const myGuides = getMyGuides(guides);
   const activeGuide = guides.find((g) => g.taskId === activeTaskId);
@@ -29,7 +31,7 @@ export function MyTaskPanel() {
   return (
     <div className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
       {/* 좌측: 내 업무 목록 (5col) */}
-      <section className="md:col-span-5 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+      <section ref={leftRef} className="md:col-span-5 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col gap-4 overflow-y-auto max-h-[calc(100vh-120px)]">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-900">
             ⭐ 내 업무 ({myGuides.length}개)
@@ -152,7 +154,7 @@ export function MyTaskPanel() {
       </section>
 
       {/* 우측: 상세 매뉴얼 (7col) */}
-      <section className="md:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col">
+      <section ref={rightRef} className="md:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col overflow-y-auto max-h-[calc(100vh-120px)]">
         {activeStepData ? (
           <ViewDetail
             guide={activeGuide!}
