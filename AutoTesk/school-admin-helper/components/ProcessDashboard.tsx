@@ -18,7 +18,7 @@ type Props = {
  */
 export function ProcessDashboard({ domainId }: Props) {
   const guide: ProcessGuide | undefined = getProcessGuide(domainId);
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState<number | null>(null);
 
   if (!guide) {
     return (

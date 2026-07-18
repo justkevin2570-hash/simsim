@@ -4,7 +4,7 @@ import type { ProcessStep } from '@/lib/processGuides';
 
 type Props = {
   steps: ProcessStep[];
-  activeStep: number;
+  activeStep: number | null;
   onStepChange: (order: number) => void;
 };
 
