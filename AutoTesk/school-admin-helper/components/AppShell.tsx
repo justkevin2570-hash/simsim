@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-type Tab = 'view' | 'build' | 'admin';
+type Tab = 'view' | 'mytask' | 'build' | 'admin';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   // Tab state is managed by the parent; we just render nav
@@ -18,6 +18,7 @@ type TabNavProps = {
 export function TabNav({ activeTab, onTabChange }: TabNavProps) {
   const tabs: { key: Tab; label: string; icon: string }[] = [
     { key: 'view', label: '업무 검색 및 조회', icon: '🔍' },
+    { key: 'mytask', label: '내 업무', icon: '⭐' },
     { key: 'build', label: '선생님용 업무 제작기', icon: '🛠' },
     { key: 'admin', label: '관리자 간편 반영기', icon: '🔐' },
   ];

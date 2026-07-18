@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useGuideStore, type Guide } from '@/lib/guideStore';
+import { useMyTaskStore } from '@/lib/myTaskStore';
 import { ViewDetail } from '@/components/ViewDetail';
 
 /**
@@ -12,6 +13,7 @@ import { ViewDetail } from '@/components/ViewDetail';
 export function ViewPanel() {
   const { guides, searchGuides, activeTaskId, setActiveTaskId } =
     useGuideStore();
+  const { isMyTask, addMyTask, removeMyTask } = useMyTaskStore();
   const [query, setQuery] = useState('');
   const [activeStep, setActiveStep] = useState<number | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -158,6 +160,27 @@ export function ViewPanel() {
                   </div>
                 );
               })}
+            </div>
+
+            {/* 내 업무에 추가 / 제거 */}
+            <div className="flex gap-2">
+              {isMyTask(activeGuide.taskId) ? (
+                <button
+                  type="button"
+                  onClick={() => removeMyTask(activeGuide.taskId)}
+                  className="flex-1 text-xs font-bold px-3 py-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  ⭐ 내 업무에서 제거
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => addMyTask(activeGuide.taskId)}
+                  className="flex-1 text-xs font-bold px-3 py-2 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors cursor-pointer"
+                >
+                  ⭐ 내 업무에 추가
+                </button>
+              )}
             </div>
 
             {/* 수정하러 가기 */}
