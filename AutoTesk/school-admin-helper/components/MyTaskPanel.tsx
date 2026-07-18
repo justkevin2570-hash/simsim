@@ -9,8 +9,12 @@ import { ViewDetail } from '@/components/ViewDetail';
  * 내 업무 탭
  * 사용자가 저장한 업무만 모아서 보여준다.
  */
-export function MyTaskPanel() {
-  const { guides } = useGuideStore();
+export function MyTaskPanel({
+  onTabChange,
+}: {
+  onTabChange?: (tab: 'view' | 'mytask' | 'build' | 'admin') => void;
+}) {
+  const { guides, setBuilderPreset, setAdminPendingJson } = useGuideStore();
   const { myTasks, getMyGuides, removeMyTask } = useMyTaskStore();
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
   const [activeStep, setActiveStep] = useState<number | null>(null);
@@ -86,6 +90,38 @@ export function MyTaskPanel() {
                     title="삭제"
                   >
                     ✕
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBuilderPreset(guide);
+                      onTabChange?.('build');
+                    }}
+                    className="p-2.5 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all cursor-pointer"
+                    title="수정"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const payload = {
+                        taskName: guide.taskName,
+                        category: guide.category,
+                        keywords: guide.keywords,
+                        steps: guide.steps.map((s) => ({
+                          stepName: s.stepName,
+                          guideText: s.guideText,
+                          files: s.files,
+                        })),
+                      };
+                      setAdminPendingJson(JSON.stringify(payload, null, 2));
+                      onTabChange?.('admin');
+                    }}
+                    className="text-xs font-bold px-2 py-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all cursor-pointer whitespace-nowrap"
+                    title="자료 공유"
+                  >
+                    📤 자료 공유
                   </button>
                 </div>
               );

@@ -28,13 +28,14 @@ export function BuilderPanel({
 }: {
   onTabChange?: (tab: 'view' | 'mytask' | 'build' | 'admin') => void;
 }) {
-  const { builderPreset, setBuilderPreset, setAdminPendingJson, addGuide, getNextId } = useGuideStore();
+  const { builderPreset, setBuilderPreset, setAdminPendingJson, addGuide, updateGuide, getNextId } = useGuideStore();
   const { addMyTask } = useMyTaskStore();
 
   const [taskName, setTaskName] = useState('');
   const [category, setCategory] = useState('학생지도/행사');
   const [keywords, setKeywords] = useState('');
   const [steps, setSteps] = useState<BuilderStep[]>([]);
+  const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const mermaidRef = useRef<HTMLDivElement>(null);
   const nextIdRef = useRef(1);
 
@@ -53,8 +54,9 @@ export function BuilderPanel({
         })),
       );
       nextIdRef.current = builderPreset.steps.length + 1;
+      setEditingTaskId(builderPreset.taskId);
       setBuilderPreset(null);
-    } else if (steps.length === 0) {
+    } else if (steps.length === 0 && !editingTaskId) {
       // 초기값: 빈 상태로 시작
       const id = nextIdRef.current++;
       setSteps([
@@ -108,29 +110,37 @@ export function BuilderPanel({
   const [showModal, setShowModal] = useState(false);
   const [jsonOutput, setJsonOutput] = useState('');
 
-  /** 현재 폼 데이터를 로컬 내 업무에 저장 */
+  /** 현재 폼 데이터를 로컬 내 업무에 저장 (수정 또는 신규) */
   const saveToMyTasks = () => {
     if (!taskName.trim()) {
       alert('업무명을 입력해주세요.');
       return;
     }
-    const newId = getNextId();
-    addGuide({
-      taskId: newId,
-      taskName,
-      category,
-      keywords,
-      source: 'custom',
-      createdAt: new Date().toISOString().split('T')[0],
-      steps: steps.map((s, i) => ({
-        stepOrder: i + 1,
-        stepName: s.name,
-        guideText: s.guide,
-        files: s.file ? [{ name: s.file, url: '#' }] : [],
-      })),
-    });
-    addMyTask(newId);
-    alert(`✅ "${taskName}"이(가) 내 업무에 저장되었습니다.`);
+    const stepsData = steps.map((s, i) => ({
+      stepOrder: i + 1,
+      stepName: s.name,
+      guideText: s.guide,
+      files: s.file ? [{ name: s.file, url: '#' }] : [],
+    }));
+
+    if (editingTaskId) {
+      updateGuide(editingTaskId, { taskName, category, keywords, steps: stepsData });
+      alert(`✅ "${taskName}"이(가) 수정되었습니다.`);
+      setEditingTaskId(null);
+    } else {
+      const newId = getNextId();
+      addGuide({
+        taskId: newId,
+        taskName,
+        category,
+        keywords,
+        source: 'custom',
+        createdAt: new Date().toISOString().split('T')[0],
+        steps: stepsData,
+      });
+      addMyTask(newId);
+      alert(`✅ "${taskName}"이(가) 내 업무에 저장되었습니다.`);
+    }
     onTabChange?.('mytask');
   };
 
