@@ -3,106 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>고등학교 수학 - 수학 교사는 심심했다</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-family: 'Segoe UI', 'Noto Sans KR', sans-serif;
-            padding: 40px 20px;
-        }
-        .back {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            color: rgba(255,255,255,0.35);
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: color 0.2s;
-            z-index: 10;
-        }
-        .back:hover { color: rgba(255,255,255,0.7); }
-        h1 {
-            color: #fff;
-            font-size: 2.5rem;
-            text-align: center;
-            letter-spacing: -0.5px;
-            margin-bottom: 12px;
-        }
-        .subtitle {
-            color: rgba(255,255,255,0.45);
-            font-size: 0.9rem;
-            margin-bottom: 48px;
-            text-align: center;
-        }
-        .buttons {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            max-width: 360px;
-        }
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 16px 24px;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #f4f4f4;
-            font-size: 1.05rem;
-            font-weight: 600;
-            text-decoration: none;
-            text-align: center;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            user-select: none;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            background: rgba(255,255,255,0.13);
-            border-color: rgba(255,255,255,0.25);
-        }
-        .btn:active {
-            transform: translateY(-1px);
-        }
-        .btn.placeholder {
-            opacity: 0.35;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        .footer {
-            margin-top: 56px;
-            color: rgba(255,255,255,0.12);
-            font-size: 0.75rem;
-            text-align: center;
-        }
-    </style>
+    <title>고등학교 수학 | 수학 교사는 심심했다</title>
+    <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
-    <a class="back" href="../select.html">← 뒤로</a>
+    <a class="back" href="../select.html">← 수업 자료</a>
 
-    <h1>📘 고등학교 수학</h1>
-    <p class="subtitle">과목을 선택하세요</p>
+    <header class="page-header">
+        <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 3v17h17z"/><path d="M8 11v5h5z"/><path d="M4 7h1.6M4 11h1.6M4 15h1.6"/></svg></div>
+        <h1>고등학교 수학</h1>
+        <p class="sub">과목을 선택하세요</p>
+    </header>
 
-    <div class="buttons">
-        <a class="btn" href="공통수학1/">공통수학Ⅰ</a>
-        <a class="btn" href="공통수학2/">공통수학Ⅱ</a>
-        <a class="btn" href="대수/">대수</a>
-        <a class="btn" href="확률과통계/">확률과 통계</a>
-        <a class="btn" href="미적분1/">미적분Ⅰ</a>
-        <a class="btn" href="미적분2/">미적분Ⅱ</a>
-        <a class="btn placeholder" href="#">─</a>
-        <a class="btn placeholder" href="#">─</a>
-        <a class="btn placeholder" href="#">─</a>
-        <a class="btn placeholder" href="#">─</a>
-    </div>
+    <main>
+        <div class="list">
+            <span class="list-item disabled">공통수학Ⅰ <small>준비 중</small></span>
+            <span class="list-item disabled">공통수학Ⅱ <small>준비 중</small></span>
+            <a class="list-item" href="대수/">대수 <small>→</small></a>
+            <span class="list-item disabled">확률과 통계 <small>준비 중</small></span>
+            <span class="list-item disabled">미적분Ⅰ <small>준비 중</small></span>
+            <span class="list-item disabled">미적분Ⅱ <small>준비 중</small></span>
+        </div>
+    </main>
 
-    <div class="footer">since 2026</div>
+    <footer>since 2026</footer>
 </body>
 </html>
