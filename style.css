@@ -204,6 +204,14 @@ a.list-item:hover { box-shadow: var(--shadow); transform: translateX(3px); }
 .peer-row { display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-radius: 14px; background: var(--bg); }
 .peer-row .icon { background: var(--accent-soft); color: var(--accent); }
 .peer-row .peer-name, .peer-row .peer-one { display: block; }
+/* foreducator 로고 모양 (그 사이트 고유 색이라 이 아이콘에만 씀) */
+.peer-row .icon.fe-logo {
+  background: #d9eb99; color: #252922;
+  border: 2px solid #252922; box-shadow: 2px 3px 0 #252922;
+  font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 1.45rem;
+  letter-spacing: -1px; line-height: 1;
+}
+.fe-name { font-family: 'Helvetica Neue', Arial, var(--sans); font-weight: 800; letter-spacing: -.3px; }
 
 /* 작은 안내 칸 */
 .note {
@@ -235,7 +243,7 @@ footer { margin-top: 64px; color: var(--ink-faint); font-size: .85rem; letter-sp
   .app-desc { white-space: nowrap; }
   .badge { margin-left: 0; }
   .peer { padding: 20px 18px 16px; }
-  .peer-top .icon, .peer-row .icon { display: none; }
+  .peer-top .icon { display: none; }
   .peer-row { gap: 12px; }
   .peer-link .peer-sub { display: block; margin: 2px 0 0; }
 }
