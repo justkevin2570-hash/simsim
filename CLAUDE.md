@@ -31,6 +31,13 @@
 - 아직 없는 페이지로 가는 링크는 만들지 않고 "준비 중"(`.disabled`, `.get-soon`)으로 표시합니다.
 - 바꾼 화면은 데스크톱(1280px)과 모바일(390px)에서 모두 확인합니다.
 
+## 디자인 참고 스킬 (ui-ux-pro-max)
+
+- `.claude/skills/ui-ux-pro-max/`에 UI/UX 참고 스킬이 들어 있습니다. (출처: nextlevelbuilder/ui-ux-pro-max-skill, MIT 라이선스)
+- 검색 도구는 저장소 루트에서 `python3 .claude/skills/ui-ux-pro-max/scripts/search.py "<검색어>" --domain <분야>`로 실행합니다. 스킬 설명에 나오는 `${CLAUDE_PLUGIN_ROOT}` 경로 대신 이 경로를 씁니다.
+- 접근성, 터치 크기, 대비 같은 점검에 참고합니다. **색·폰트·전체 분위기는 이 문서의 디자인 원칙이 항상 우선**이고, 스킬이 추천하는 스타일로 사이트를 바꾸려면 먼저 사용자에게 물어봅니다.
+- `.claude/` 폴더는 `.vercelignore`로 사이트 배포에서 빠집니다.
+
 ## 작업 흐름
 
 - 사용자와는 한국어로, 어려운 용어 없이 쉽게 이야기합니다.
