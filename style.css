@@ -140,7 +140,6 @@ a.sub-item:hover { transform: translateX(3px); background: var(--accent-soft); }
 .get {
   display: inline-flex; align-items: center; gap: 6px;
   font: inherit; font-size: .82rem; padding: 7px 14px; border-radius: 999px;
-  min-height: 44px; box-sizing: border-box;
   white-space: nowrap; text-decoration: none;
   transition: background .15s, transform .15s;
 }
@@ -243,7 +242,7 @@ footer { margin-top: 64px; color: var(--ink-soft); font-size: .85rem; letter-spa
   .sub-list { padding-left: 22px; }
   .app-item { grid-template-columns: 1fr auto; row-gap: 6px; }
   .app-item .app-meta { grid-column: 1 / span 2; grid-row: 2; }
-  .app-item .get { grid-column: 2; grid-row: 1; padding: 6px 14px; font-size: .78rem; }
+  .app-item .get { grid-column: 2; grid-row: 1; padding: 6px 12px; font-size: .78rem; }
   .app-desc { white-space: nowrap; }
   .badge { margin-left: 0; }
   .peer { padding: 20px 18px 16px; }
