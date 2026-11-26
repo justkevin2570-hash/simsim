@@ -144,8 +144,9 @@ a.sub-item:hover { transform: translateX(3px); background: var(--accent-soft); }
   transition: background .15s, transform .15s;
 }
 .get svg { width: 13px; height: 13px; }
+.app-item .get { min-width: 6.2em; justify-content: center; }
 a.get:hover { transform: translateY(-1px); }
-.get-dl { background: var(--sage-strong); color: #fff; }
+.get-dl { background: var(--sage-strong); color: #fff; border: 1px solid transparent; cursor: pointer; }
 .get-dl:hover { background: #5a6d53; }
 .get-soon { color: var(--ink-faint); border: 1px dashed #d9ccbd; cursor: default; }
 
@@ -241,8 +242,8 @@ footer { margin-top: 64px; color: var(--ink-soft); font-size: .85rem; letter-spa
   .page-header { margin-bottom: 40px; }
   .sub-list { padding-left: 22px; }
   .app-item { grid-template-columns: 1fr auto; row-gap: 6px; }
-  .app-item .app-meta { grid-column: 1 / span 2; grid-row: 2; }
-  .app-item .get { grid-column: 2; grid-row: 1; padding: 6px 12px; font-size: .78rem; }
+  .app-item .app-meta { grid-column: 1; grid-row: 2; flex-wrap: wrap; row-gap: 6px; }
+  .app-item .get { grid-column: 2; grid-row: 1 / span 2; align-self: center; padding: 6px 12px; font-size: .78rem; min-width: 7.6em; }
   .app-desc { white-space: nowrap; }
   .badge { margin-left: 0; }
   .peer { padding: 20px 18px 16px; }
