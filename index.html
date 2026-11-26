@@ -96,15 +96,18 @@
             });
         });
 
-        // 휴대폰·태블릿에서는 Windows 설치 파일을 받아도 쓸 수 없으니 누를 수 없는 "PC 전용" 표시로 바꿈
+        // 휴대폰·태블릿에서는 Windows 설치 파일을 받아도 쓸 수 없으니,
+        // 버튼 모양(색·아이콘)은 그대로 두고 글자만 "PC 전용"으로 바꾼 누를 수 없는 표시로 바꿈
         (function () {
             var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // 아이패드
             if (!isMobile) return;
             document.querySelectorAll('.get-dl').forEach(function (a) {
                 var label = document.createElement('span');
-                label.className = 'get get-soon';
-                label.textContent = 'PC 전용';
+                label.className = 'get get-dl is-static';
+                var icon = a.querySelector('svg');
+                if (icon) label.appendChild(icon.cloneNode(true));
+                label.appendChild(document.createTextNode('PC 전용'));
                 a.replaceWith(label);
             });
         })();
