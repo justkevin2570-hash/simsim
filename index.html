@@ -97,7 +97,7 @@
         });
 
         // 휴대폰·태블릿에서는 Windows 설치 파일을 받아도 쓸 수 없으니,
-        // 버튼 모양(색·아이콘)은 그대로 두고 글자만 "PC 전용"으로 바꾼 누를 수 없는 표시로 바꿈
+        // 버튼 색은 그대로 두고 화살표 없이 "PC 전용" 글자만 보이는 누를 수 없는 표시로 바꿈
         (function () {
             var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // 아이패드
@@ -105,9 +105,7 @@
             document.querySelectorAll('.get-dl').forEach(function (a) {
                 var label = document.createElement('span');
                 label.className = 'get get-dl is-static';
-                var icon = a.querySelector('svg');
-                if (icon) label.appendChild(icon.cloneNode(true));
-                label.appendChild(document.createTextNode('PC 전용'));
+                label.textContent = 'PC 전용';
                 a.replaceWith(label);
             });
         })();
