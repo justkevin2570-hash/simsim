@@ -148,6 +148,7 @@ a.sub-item:hover { transform: translateX(3px); background: var(--accent-soft); }
 a.get:hover { transform: translateY(-1px); }
 .get-dl { background: var(--sage-strong); color: #fff; border: 1px solid transparent; cursor: pointer; }
 .get-dl:hover { background: #5a6d53; }
+.get-dl.is-static, .get-dl.is-static:hover { background: var(--sage-strong); cursor: default; }  /* 휴대폰의 'PC 전용': 모양은 같고 누를 수 없음 */
 .get-soon { color: var(--ink-faint); border: 1px dashed #d9ccbd; cursor: default; }
 
 /* ── 일반 목록 (하위 페이지) ── */
