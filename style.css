@@ -233,17 +233,6 @@ a.list-item:hover { box-shadow: var(--shadow); transform: translateX(3px); }
 .btn.primary { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
 .btn.primary:hover { background: #a45233; }
 
-/* 링크 복사 안내 (휴대폰) */
-.toast {
-  position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 12px);
-  width: max-content; max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 14px;
-  background: var(--ink); color: var(--surface); font-size: .9rem; text-align: center;
-  box-shadow: var(--shadow); opacity: 0; pointer-events: none;
-  transition: opacity .2s, transform .2s;
-}
-.toast.show { opacity: 1; transform: translate(-50%, 0); }
-.sr-copy { position: fixed; left: -9999px; top: 0; opacity: 0; }  /* 예전 브라우저용 복사 칸 */
-
 footer { margin-top: 64px; color: var(--ink-soft); font-size: .85rem; letter-spacing: .5px; }
 
 /* ── 모바일 ── */

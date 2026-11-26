@@ -88,8 +88,6 @@
 
     <footer>since 2026</footer>
 
-    <div class="toast" role="status" aria-live="polite"></div>
-
     <script>
         document.querySelectorAll('button.menu-head').forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -98,49 +96,16 @@
             });
         });
 
-        // 휴대폰·태블릿에서는 Windows 설치 파일을 받아도 쓸 수 없으니 "링크 복사"로 바꿈
+        // 휴대폰·태블릿에서는 Windows 설치 파일을 받아도 쓸 수 없으니 누를 수 없는 "PC 전용" 표시로 바꿈
         (function () {
             var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
                 (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // 아이패드
             if (!isMobile) return;
-
-            var toast = document.querySelector('.toast');
-            var timer;
-            function showToast(msg) {
-                toast.textContent = msg;
-                toast.classList.add('show');
-                clearTimeout(timer);
-                timer = setTimeout(function () { toast.classList.remove('show'); }, 3000);
-            }
-            function copyText(text) {
-                if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
-                return new Promise(function (resolve, reject) {
-                    var t = document.createElement('textarea');
-                    t.value = text; t.setAttribute('readonly', ''); t.className = 'sr-copy';
-                    document.body.appendChild(t); t.select();
-                    var ok = document.execCommand('copy');
-                    document.body.removeChild(t);
-                    ok ? resolve() : reject();
-                });
-            }
-
-            var linkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>';
             document.querySelectorAll('.get-dl').forEach(function (a) {
-                var url = a.href;
-                var name = a.closest('.app-item').querySelector('.app-name').textContent;
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = a.className;
-                btn.setAttribute('aria-label', name + ' 다운로드 링크 복사');
-                btn.innerHTML = linkIcon + '링크 복사';
-                btn.addEventListener('click', function () {
-                    copyText(url).then(function () {
-                        showToast('링크를 복사했어요. PC에서 열어 설치해 주세요.');
-                    }, function () {
-                        showToast('복사하지 못했어요. PC에서 이 페이지를 열어 받아 주세요.');
-                    });
-                });
-                a.replaceWith(btn);
+                var label = document.createElement('span');
+                label.className = 'get get-soon';
+                label.textContent = 'PC 전용';
+                a.replaceWith(label);
             });
         })();
     </script>
