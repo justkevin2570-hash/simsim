@@ -133,10 +133,6 @@ a.sub-item:hover { transform: translateX(3px); background: var(--accent-soft); }
 .badge.windows { background: #efe6d8; color: #7d6345; }
 .badge.android { background: var(--sage-soft); color: #597052; }
 
-.placeholder { background: transparent; border: 1px dashed #e2d6c8; }
-.placeholder .app-name { color: var(--ink-soft); }
-.placeholder .app-desc { color: var(--ink-faint); }
-
 .get {
   display: inline-flex; align-items: center; gap: 6px;
   font: inherit; font-size: .82rem; padding: 7px 14px; border-radius: 999px;

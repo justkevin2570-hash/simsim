@@ -12,7 +12,7 @@
 
 - `index.html`: 메인. 펼침 카드 메뉴
   - 수학: 수행평가(`Math/assessment.html`), 서·논술형 문항(`Math/essay.html`)
-  - 개발 앱: 서서니 노트(Windows, 다운로드), Symmetry Rush(Android, 출시 예정), 준비 중 2개
+  - 개발 앱: 서서니 노트(Windows, 다운로드), Symmetry Rush(Android, 출시 예정). 새 앱은 Symmetry Rush처럼 이름·설명·기기 배지·"출시 예정" 버튼으로 추가
   - 동료교사 사이트: 펼치면 Foreducator 한 줄(이름, 한 줄 소개, 열기 버튼)이 보임
 - `style.css`: 모든 페이지가 같이 쓰는 공통 스타일
 - `Math/select.html`, `Math/고등학교 수학/…`: 수업 자료 페이지. 현재 메인 메뉴에서는 연결하지 않음
